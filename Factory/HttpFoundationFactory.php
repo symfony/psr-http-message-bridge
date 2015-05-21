@@ -19,7 +19,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createRequest(RequestInterface $psrHttpMessageRequest)
+    public static function createRequest(RequestInterface $psrHttpMessageRequest)
     {
         // TODO: Implement createRequest() method.
     }
@@ -27,7 +27,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createResponse(ResponseInterface $psrHttpMessageResponse)
+    public static function createResponse(ResponseInterface $psrHttpMessageResponse)
     {
         // TODO: Implement createResponse() method.
     }
