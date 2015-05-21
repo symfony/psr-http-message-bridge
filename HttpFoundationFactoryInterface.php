@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class HttpFoundationFactory
+interface HttpFoundationFactoryInterface
 {
     /**
      * Creates a Symfony Request from a PSR-7 one.
@@ -21,10 +21,7 @@ class HttpFoundationFactory
      *
      * @return Request
      */
-    public function createRequest(RequestInterface $psrHttpMessageRequest)
-    {
-        // TODO
-    }
+    public function createRequest(RequestInterface $psrHttpMessageRequest);
 
     /**
      * Creates a Symfony Response from a PSR-7 one.
@@ -33,8 +30,5 @@ class HttpFoundationFactory
      *
      * @return Response
      */
-    public function createResponse(ResponseInterface $psrHttpMessageResponse)
-    {
-        // TODO
-    }
+    public function createResponse(ResponseInterface $psrHttpMessageResponse);
 }
