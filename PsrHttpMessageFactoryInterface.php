@@ -21,7 +21,7 @@ interface PsrHttpMessageFactoryInterface
      *
      * @return ServerRequestInterface
      */
-    public static function createRequest(Request $symfonyRequest);
+    public function createRequest(Request $symfonyRequest);
 
     /**
      * Creates a PSR-7 Response from a Symfony one.
@@ -30,5 +30,5 @@ interface PsrHttpMessageFactoryInterface
      *
      * @return ResponseInterface
      */
-    public static function createResponse(Response $symfonyResponse);
+    public function createResponse(Response $symfonyResponse);
 }

@@ -19,7 +19,7 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createRequest(Request $symfonyRequest)
+    public function createRequest(Request $symfonyRequest)
     {
         return new ServerRequest(
 
@@ -29,7 +29,7 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createResponse(Response $symfonyResponse)
+    public function createResponse(Response $symfonyResponse)
     {
         return new DiactorosResponse(
 
