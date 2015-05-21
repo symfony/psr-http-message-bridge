@@ -21,7 +21,9 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
      */
     public static function createRequest(Request $symfonyRequest)
     {
-        // TODO: Implement createRequest() method.
+        return new ServerRequest(
+
+        );
     }
 
     /**
@@ -29,6 +31,8 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
      */
     public static function createResponse(Response $symfonyResponse)
     {
-        // TODO: Implement createResponse() method.
+        return new DiactorosResponse(
+
+        );
     }
 }

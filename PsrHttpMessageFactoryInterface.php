@@ -2,7 +2,7 @@
 
 namespace Symfony\Bridge\PsrHttpMessage;
 
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +19,7 @@ interface PsrHttpMessageFactoryInterface
      *
      * @param Request $symfonyRequest
      *
-     * @return RequestInterface
+     * @return ServerRequestInterface
      */
     public static function createRequest(Request $symfonyRequest);
 

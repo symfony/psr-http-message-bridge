@@ -2,7 +2,7 @@
 
 namespace Symfony\Bridge\PsrHttpMessage\Factory;
 
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,13 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class HttpFoundationFactory implements HttpFoundationFactoryInterface
 {
-
     /**
      * {@inheritdoc}
      */
-    public static function createRequest(RequestInterface $psrHttpMessageRequest)
+    public static function createRequest(ServerRequestInterface $psrHttpMessageRequest)
     {
-        // TODO: Implement createRequest() method.
+        return new Request(
+
+        );
     }
 
     /**
@@ -29,6 +30,8 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
      */
     public static function createResponse(ResponseInterface $psrHttpMessageResponse)
     {
-        // TODO: Implement createResponse() method.
+        return new Response(
+
+        );
     }
 }
