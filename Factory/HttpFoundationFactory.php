@@ -21,7 +21,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
     public function createRequest(ServerRequestInterface $psrHttpMessageRequest)
     {
         $parsedBody = $psrHttpMessageRequest->getParsedBody();
-        $request = is_array($parsedBody) ? $parsedBody : [];
+        $request = is_array($parsedBody) ? $parsedBody : array();
 
         return new Request(
             $psrHttpMessageRequest->getQueryParams(),
