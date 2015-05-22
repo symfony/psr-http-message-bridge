@@ -25,7 +25,7 @@
         "zendframework/zend-diactoros": "~1.0"
     },
     "suggest": {
-      "zendframework/zend-diactoros": "To use the zend-diactoros adapter"
+        "zendframework/zend-diactoros": "To use the zend-diactoros factory"
     },
     "autoload": {
         "psr-4": { "Symfony\\Bridge\\PsrHttpMessage\\": "" }

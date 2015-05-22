@@ -19,11 +19,11 @@ interface HttpFoundationFactoryInterface
     /**
      * Creates a Symfony Request instance from a PSR-7 one.
      *
-     * @param ServerRequestInterface $psrHttpMessageRequest
+     * @param ServerRequestInterface $psrRequest
      *
      * @return Request
      */
-    public function createRequest(ServerRequestInterface $psrHttpMessageRequest);
+    public function createRequest(ServerRequestInterface $psrRequest);
 
     /**
      * Creates Symfony UploadedFile instance from PSR-7 ones.
@@ -37,9 +37,9 @@ interface HttpFoundationFactoryInterface
     /**
      * Creates a Symfony Response instance from a PSR-7 one.
      *
-     * @param ResponseInterface $psrHttpMessageResponse
+     * @param ResponseInterface $psrResponse
      *
      * @return Response
      */
-    public function createResponse(ResponseInterface $psrHttpMessageResponse);
+    public function createResponse(ResponseInterface $psrResponse);
 }

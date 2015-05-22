@@ -20,19 +20,19 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createRequest(ServerRequestInterface $psrHttpMessageRequest)
+    public function createRequest(ServerRequestInterface $psrRequest)
     {
-        $parsedBody = $psrHttpMessageRequest->getParsedBody();
+        $parsedBody = $psrRequest->getParsedBody();
         $request = is_array($parsedBody) ? $parsedBody : array();
 
         return new Request(
-            $psrHttpMessageRequest->getQueryParams(),
+            $psrRequest->getQueryParams(),
             $request,
-            $psrHttpMessageRequest->getAttributes(),
-            $psrHttpMessageRequest->getCookieParams(),
-            $this->getFiles($psrHttpMessageRequest->getUploadedFiles()),
-            $psrHttpMessageRequest->getServerParams(),
-            $psrHttpMessageRequest->getBody()->__toString()
+            $psrRequest->getAttributes(),
+            $psrRequest->getCookieParams(),
+            $this->getFiles($psrRequest->getUploadedFiles()),
+            $psrRequest->getServerParams(),
+            $psrRequest->getBody()->__toString()
         );
     }
 
@@ -91,7 +91,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createResponse(ResponseInterface $psrHttpMessageResponse)
+    public function createResponse(ResponseInterface $psrResponse)
     {
         return new Response(
 
