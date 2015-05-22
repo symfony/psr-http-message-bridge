@@ -4,18 +4,20 @@ namespace Symfony\Bridge\PsrHttpMessage;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UploadedFileInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Creates Symfony Request and Response from PSR-7 ones.
+ * Creates Symfony Request and Response instances from PSR-7 ones.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
 interface HttpFoundationFactoryInterface
 {
     /**
-     * Creates a Symfony Request from a PSR-7 one.
+     * Creates a Symfony Request instance from a PSR-7 one.
      *
      * @param ServerRequestInterface $psrHttpMessageRequest
      *
@@ -24,7 +26,16 @@ interface HttpFoundationFactoryInterface
     public function createRequest(ServerRequestInterface $psrHttpMessageRequest);
 
     /**
-     * Creates a Symfony Response from a PSR-7 one.
+     * Creates Symfony UploadedFile instance from PSR-7 ones.
+     *
+     * @param UploadedFileInterface $psrUploadedFile
+     *
+     * @return UploadedFile
+     */
+    public function createUploadedFile(UploadedFileInterface $psrUploadedFile);
+
+    /**
+     * Creates a Symfony Response instance from a PSR-7 one.
      *
      * @param ResponseInterface $psrHttpMessageResponse
      *

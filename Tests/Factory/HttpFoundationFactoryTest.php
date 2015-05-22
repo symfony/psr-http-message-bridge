@@ -1,9 +1,11 @@
 <?php
 
 namespace Symfony\Bridge\PsrHttpMessage\Tests\Factory;
+
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\ServerRequest;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Stream;
+use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\UploadedFile;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -83,6 +85,29 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertCount(0, $this->factory->createRequest($serverRequest)->request);
+    }
+
+    public function testCreateUploadedFile()
+    {
+        $tmpDir = sys_get_temp_dir();
+
+        $filePath = tempnam($tmpDir, uniqid());
+        file_put_contents($filePath, 'An uploaded file.');
+
+        $size = filesize($filePath);
+        $uploadedFile = new UploadedFile($filePath, $size, UPLOAD_ERR_OK, 'myfile.txt', 'text/plain');
+
+        $symfonyUploadedFile = $this->factory->createUploadedFile($uploadedFile);
+
+        $uniqid = uniqid();
+        $symfonyUploadedFile->move($tmpDir, $uniqid);
+
+        $this->assertEquals($size, $symfonyUploadedFile->getClientSize());
+        $this->assertEquals(UPLOAD_ERR_OK, $symfonyUploadedFile->getError());
+        $this->assertEquals('myfile.txt', $symfonyUploadedFile->getClientOriginalName());
+        $this->assertEquals('txt', $symfonyUploadedFile->getClientOriginalExtension());
+        $this->assertEquals('text/plain', $symfonyUploadedFile->getClientMimeType());
+        $this->assertEquals('An uploaded file.', file_get_contents($tmpDir.'/'.$uniqid));
     }
 
     public function testCreateResponse()
