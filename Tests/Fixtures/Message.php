@@ -16,9 +16,11 @@ class Message implements MessageInterface
     private $headers = array();
     private $body;
 
-    public function __construct()
+    public function __construct($version = '1.1', array $headers = array(), StreamInterface $body = null)
     {
-        $this->body = new Stream();
+        $this->version = $version;
+        $this->headers = $headers;
+        $this->body = null === $body ? new Stream() : $body;
     }
 
     public function getProtocolVersion()
@@ -28,7 +30,7 @@ class Message implements MessageInterface
 
     public function withProtocolVersion($version)
     {
-        $this->version = $version;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getHeaders()
@@ -53,23 +55,17 @@ class Message implements MessageInterface
 
     public function withHeader($name, $value)
     {
-        if (!is_array($value)) {
-            $value = array($value);
-        }
-
-        $this->headers[$name] = $value;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function withAddedHeader($name, $value)
     {
-        $this->headers[$name][] = $value;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function withoutHeader($name)
     {
-        if ($this->hasHeader($name)) {
-            unset($this->headers[$name]);
-        }
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getBody()
@@ -79,6 +75,6 @@ class Message implements MessageInterface
 
     public function withBody(StreamInterface $body)
     {
-        $this->body = $body;
+        throw \BadMethodCallException('Not implemented.');
     }
 }

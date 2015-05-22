@@ -3,6 +3,7 @@
 namespace Symfony\Bridge\PsrHttpMessage\Tests\Fixtures;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -10,21 +11,29 @@ use Psr\Http\Message\UriInterface;
  */
 class ServerRequest extends Message implements ServerRequestInterface
 {
-    private $requestTarget = '/';
-    private $method = 'GET';
+    private $requestTarget ;
+    private $method;
     private $uri;
-    private $server = array();
-    private $cookies = array();
-    private $query = array();
-    private $uploadedFiles = array();
-    private $data = null;
-    private $attributes = array();
+    private $server;
+    private $cookies;
+    private $query;
+    private $uploadedFiles;
+    private $data;
+    private $attributes;
 
-    public function __construct($server = array())
+    public function __construct($version = '1.1', array $headers = array(), StreamInterface $body = null, $requestTarget = '/', $method = 'GET', $uri = null, array $server = array(), array $cookies = array(), array $query = array(), array $uploadedFiles = array(), $data = null, array $attributes = array())
     {
-        parent::__construct();
+        parent::__construct($version, $headers, $body);
 
+        $this->requestTarget = $requestTarget;
+        $this->method = $method;
+        $this->uri = $uri;
         $this->server = $server;
+        $this->cookies = $cookies;
+        $this->query = $query;
+        $this->uploadedFiles = $uploadedFiles;
+        $this->data = $data;
+        $this->attributes = $attributes;
     }
 
     public function getRequestTarget()
@@ -34,7 +43,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withRequestTarget($requestTarget)
     {
-        $this->requestTarget = $requestTarget;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getMethod()
@@ -44,7 +53,6 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withMethod($method)
     {
-        $this->method = $method;
     }
 
     public function getUri()
@@ -54,7 +62,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        $this->uri = $uri;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getServerParams()
@@ -69,7 +77,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withCookieParams(array $cookies)
     {
-        $this->cookies = $cookies;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getQueryParams()
@@ -79,7 +87,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withQueryParams(array $query)
     {
-        $this->query = $query;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getUploadedFiles()
@@ -89,7 +97,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withUploadedFiles(array $uploadedFiles)
     {
-        $this->uploadedFiles = $uploadedFiles;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getParsedBody()
@@ -99,7 +107,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withParsedBody($data)
     {
-        $this->data = $data;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function getAttributes()
@@ -114,13 +122,11 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withAttribute($name, $value)
     {
-        $this->attributes[$name] = $value;
+        throw \BadMethodCallException('Not implemented.');
     }
 
     public function withoutAttribute($name)
     {
-        if ($this->getAttribute($name)) {
-            unset($this->attributes[$name]);
-        }
+        throw \BadMethodCallException('Not implemented.');
     }
 }

@@ -19,15 +19,21 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateRequest()
     {
-        $serverRequest = new ServerRequest(array('country' => 'France'));
-        $serverRequest->withQueryParams(array('url' => 'http://les-tilleuls.coop'));
-        $serverRequest->withParsedBody(array('url' => 'http://dunglas.fr'));
-
         $stdClass = new \stdClass();
-        $serverRequest->withAttribute('custom', $stdClass);
-
-        $serverRequest->withCookieParams(array('city' => 'Lille'));
-        $serverRequest->withBody(new Stream('The body'));
+        $serverRequest = new ServerRequest(
+            '1.1',
+            array(),
+            new Stream('The body'),
+            '/about/kevin',
+            'GET',
+            'http://les-tilleuls.coop/about/kevin',
+            array('country' => 'France'),
+            array('city' => 'Lille'),
+            array('url' => 'http://les-tilleuls.coop'),
+            array(),
+            array('url' => 'http://dunglas.fr'),
+            array('custom' => $stdClass)
+        );
 
         $symfonyRequest = $this->factory->createRequest($serverRequest);
 
@@ -39,14 +45,43 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('The body', $symfonyRequest->getContent());
     }
 
-    public function testCreateRequestWithNonArrayParsedBody()
+    public function testCreateRequestWithNullParsedBody()
     {
-        $serverRequest = new ServerRequest();
+        $serverRequest = new ServerRequest(
+            '1.1',
+            array(),
+            new Stream(),
+            '/',
+            'GET',
+            null,
+            array(),
+            array(),
+            array(),
+            array(),
+            null,
+            array()
+        );
 
-        $serverRequest->withParsedBody(null);
         $this->assertCount(0, $this->factory->createRequest($serverRequest)->request);
+    }
 
-        $serverRequest->withParsedBody(new \stdClass());
+    public function testCreateRequestWithObjectParsedBody()
+    {
+        $serverRequest = new ServerRequest(
+            '1.1',
+            array(),
+            new Stream(),
+            '/',
+            'GET',
+            null,
+            array(),
+            array(),
+            array(),
+            array(),
+            new \stdClass(),
+            array()
+        );
+
         $this->assertCount(0, $this->factory->createRequest($serverRequest)->request);
     }
 
@@ -55,4 +90,3 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 
     }
 }
-
