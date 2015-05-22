@@ -19,7 +19,7 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateRequest()
     {
-        $serverRequest = new ServerRequest();
+        $serverRequest = new ServerRequest(array('country' => 'France'));
         $serverRequest->withQueryParams(array('url' => 'http://les-tilleuls.coop'));
         $serverRequest->withParsedBody(array('url' => 'http://dunglas.fr'));
 
@@ -27,7 +27,6 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $serverRequest->withAttribute('custom', $stdClass);
 
         $serverRequest->withCookieParams(array('city' => 'Lille'));
-        $serverRequest->withServerParams(array('country' => 'France'));
         $serverRequest->withBody(new Stream('The body'));
 
         $symfonyRequest = $this->factory->createRequest($serverRequest);

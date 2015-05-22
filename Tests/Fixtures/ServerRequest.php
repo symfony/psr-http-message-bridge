@@ -20,6 +20,13 @@ class ServerRequest extends Message implements ServerRequestInterface
     private $data = null;
     private $attributes = array();
 
+    public function __construct($server = array())
+    {
+        parent::__construct();
+
+        $this->server = $server;
+    }
+
     public function getRequestTarget()
     {
         return $this->requestTarget;
@@ -53,11 +60,6 @@ class ServerRequest extends Message implements ServerRequestInterface
     public function getServerParams()
     {
         return $this->server;
-    }
-
-    public function withServerParams(array $serverParams)
-    {
-        $this->server = $serverParams;
     }
 
     public function getCookieParams()
