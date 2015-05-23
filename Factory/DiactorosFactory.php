@@ -26,7 +26,6 @@ use Zend\Diactoros\UploadedFile as DiactorosUploadedFile;
  */
 class DiactorosFactory implements PsrHttpMessageFactoryInterface
 {
-
     /**
      * {@inheritdoc}
      */

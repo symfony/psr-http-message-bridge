@@ -18,11 +18,9 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreateRequest()
     {
-
     }
 
     public function testCreateResponse()
     {
-
     }
 }

@@ -59,7 +59,7 @@ class Message implements MessageInterface
 
     public function getHeaderLine($name)
     {
-        return $this->hasHeader($name) ? join(',', $this->headers[$name]) : '';
+        return $this->hasHeader($name) ? implode(',', $this->headers[$name]) : '';
     }
 
     public function withHeader($name, $value)

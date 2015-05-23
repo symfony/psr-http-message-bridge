@@ -50,8 +50,8 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
                     'docs' => array(
                         $this->createUploadedFile('Doc 2', UPLOAD_ERR_OK, 'doc2.txt', 'text/plain'),
                         $this->createUploadedFile('Doc 3', UPLOAD_ERR_OK, 'doc3.txt', 'text/plain'),
-                    )
-                )
+                    ),
+                ),
             ),
             array('url' => 'http://dunglas.fr'),
             array('custom' => $stdClass)
@@ -153,7 +153,7 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $response = new Response(
             '1.0',
             array(
-                'X-Symfony' => '2.8'
+                'X-Symfony' => '2.8',
             ),
             new Stream('The response body'),
             200
