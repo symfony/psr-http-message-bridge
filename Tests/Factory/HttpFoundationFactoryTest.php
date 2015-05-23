@@ -22,10 +22,12 @@ use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\UploadedFile;
 class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 {
     private $factory;
+    private $tmpDir;
 
     public function setup()
     {
         $this->factory = new HttpFoundationFactory();
+        $this->tmpDir = sys_get_temp_dir();
     }
 
     public function testCreateRequest()
@@ -41,7 +43,15 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
             array('country' => 'France'),
             array('city' => 'Lille'),
             array('url' => 'http://les-tilleuls.coop'),
-            array(),
+            array(
+                'doc1' => $this->createUploadedFile('Doc 1', UPLOAD_ERR_OK, 'doc1.txt', 'text/plain'),
+                'nested' => array(
+                    'docs' => array(
+                        $this->createUploadedFile('Doc 2', UPLOAD_ERR_OK, 'doc2.txt', 'text/plain'),
+                        $this->createUploadedFile('Doc 3', UPLOAD_ERR_OK, 'doc3.txt', 'text/plain'),
+                    )
+                )
+            ),
             array('url' => 'http://dunglas.fr'),
             array('custom' => $stdClass)
         );
@@ -49,6 +59,9 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $symfonyRequest = $this->factory->createRequest($serverRequest);
 
         $this->assertEquals('http://les-tilleuls.coop', $symfonyRequest->query->get('url'));
+        $this->assertEquals('doc1.txt', $symfonyRequest->files->get('doc1')->getClientOriginalName());
+        $this->assertEquals('doc2.txt', $symfonyRequest->files->get('nested[docs][0]', null, true)->getClientOriginalName());
+        $this->assertEquals('doc3.txt', $symfonyRequest->files->get('nested[docs][1]', null, true)->getClientOriginalName());
         $this->assertEquals('http://dunglas.fr', $symfonyRequest->request->get('url'));
         $this->assertEquals($stdClass, $symfonyRequest->attributes->get('custom'));
         $this->assertEquals('Lille', $symfonyRequest->cookies->get('city'));
@@ -98,25 +111,40 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateUploadedFile()
     {
-        $tmpDir = sys_get_temp_dir();
-
-        $filePath = tempnam($tmpDir, uniqid());
-        file_put_contents($filePath, 'An uploaded file.');
-
-        $size = filesize($filePath);
-        $uploadedFile = new UploadedFile($filePath, $size, UPLOAD_ERR_OK, 'myfile.txt', 'text/plain');
-
+        $uploadedFile = $this->createUploadedFile('An uploaded file.', UPLOAD_ERR_OK, 'myfile.txt', 'text/plain');
         $symfonyUploadedFile = $this->factory->createUploadedFile($uploadedFile);
 
         $uniqid = uniqid();
-        $symfonyUploadedFile->move($tmpDir, $uniqid);
+        $symfonyUploadedFile->move($this->tmpDir, $uniqid);
 
-        $this->assertEquals($size, $symfonyUploadedFile->getClientSize());
+        $this->assertEquals($uploadedFile->getSize(), $symfonyUploadedFile->getClientSize());
         $this->assertEquals(UPLOAD_ERR_OK, $symfonyUploadedFile->getError());
         $this->assertEquals('myfile.txt', $symfonyUploadedFile->getClientOriginalName());
         $this->assertEquals('txt', $symfonyUploadedFile->getClientOriginalExtension());
         $this->assertEquals('text/plain', $symfonyUploadedFile->getClientMimeType());
-        $this->assertEquals('An uploaded file.', file_get_contents($tmpDir.'/'.$uniqid));
+        $this->assertEquals('An uploaded file.', file_get_contents($this->tmpDir.'/'.$uniqid));
+    }
+
+    /**
+     * @expectedException        \Symfony\Component\HttpFoundation\File\Exception\FileException
+     * @expectedExceptionMessage The file "e" could not be written on disk.
+     */
+    public function testCreateUploadedFileWithError()
+    {
+        $uploadedFile = $this->createUploadedFile('Error.', UPLOAD_ERR_CANT_WRITE, 'e', 'text/plain');
+        $symfonyUploadedFile = $this->factory->createUploadedFile($uploadedFile);
+
+        $this->assertEquals(UPLOAD_ERR_CANT_WRITE, $symfonyUploadedFile->getError());
+
+        $symfonyUploadedFile->move($this->tmpDir, 'shouldFail.txt');
+    }
+
+    private function createUploadedFile($content, $error, $clientFileName, $clientMediaType)
+    {
+        $filePath = tempnam($this->tmpDir, uniqid());
+        file_put_contents($filePath, $content);
+
+        return new UploadedFile($filePath, filesize($filePath), $error, $clientFileName, $clientMediaType);
     }
 
     public function testCreateResponse()
