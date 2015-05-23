@@ -12,6 +12,7 @@
 namespace Symfony\Bridge\PsrHttpMessage\Tests\Factory;
 
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
+use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Response;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\ServerRequest;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Stream;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\UploadedFile;
@@ -149,6 +150,20 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateResponse()
     {
+        $response = new Response(
+            '1.0',
+            array(
+                'X-Symfony' => '2.8'
+            ),
+            new Stream('The response body'),
+            200
+        );
 
+        $symfonyResponse = $this->factory->createResponse($response);
+
+        $this->assertEquals('1.0', $symfonyResponse->getProtocolVersion());
+        $this->assertEquals('2.8', $symfonyResponse->headers->get('X-Symfony'));
+        $this->assertEquals('The response body', $symfonyResponse->getContent());
+        $this->assertEquals(200, $symfonyResponse->getStatusCode());
     }
 }

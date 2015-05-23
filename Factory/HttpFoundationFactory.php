@@ -102,8 +102,13 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
      */
     public function createResponse(ResponseInterface $psrResponse)
     {
-        return new Response(
-
+        $response = new Response(
+            $psrResponse->getBody()->__toString(),
+            $psrResponse->getStatusCode(),
+            $psrResponse->getHeaders()
         );
+        $response->setProtocolVersion($psrResponse->getProtocolVersion());
+
+        return $response;
     }
 }
