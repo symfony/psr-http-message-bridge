@@ -72,13 +72,13 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
      */
     public function createUploadedFile(UploadedFileInterface $psrUploadedFile)
     {
-        $tempnam = $this->getTemporaryPath();
-        $psrUploadedFile->moveTo($tempnam);
+        $temporaryPath = $this->getTemporaryPath();
+        $psrUploadedFile->moveTo($temporaryPath);
 
         $clientFileName = $psrUploadedFile->getClientFilename();
 
         return new UploadedFile(
-            $tempnam,
+            $temporaryPath,
             null === $clientFileName ? '' : $clientFileName,
             $psrUploadedFile->getClientMediaType(),
             $psrUploadedFile->getSize(),

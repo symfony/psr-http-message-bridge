@@ -32,8 +32,35 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
     public function createRequest(Request $symfonyRequest)
     {
         return new DiactorosRequest(
-
+            $symfonyRequest->server->all(),
+            array(),
+            $symfonyRequest->getUri(),
+            $symfonyRequest->getMethod(),
+            $symfonyRequest->getContent(),
+            $symfonyRequest->server->getHeaders()
         );
+    }
+
+    /**
+     * Converts Symfony uploaded files array to the PSR one.
+     *
+     * @param array $uploadedFiles
+     *
+     * @return array
+     */
+    private function getFiles(array $uploadedFiles)
+    {
+        $files = array();
+
+        foreach ($uploadedFiles as $key => $value) {
+            if ($value instanceof UploadedFile) {
+                $files[$key] = $this->createUploadedFile($value);
+            } else {
+                $files[$key] = $this->getFiles($value);
+            }
+        }
+
+        return $files;
     }
 
     /**
@@ -42,7 +69,9 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
     public function createResponse(Response $symfonyResponse)
     {
         return new DiactorosResponse(
-
+            $symfonyResponse->getContent(),
+            $symfonyResponse->getStatusCode(),
+            $symfonyResponse->headers->all()
         );
     }
 
@@ -52,9 +81,11 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
     public function createUploadedFile(UploadedFile $symfonyUploadedFile)
     {
         return new DiactorosUploadedFile(
-            null,
-            null,
-            null
+            $symfonyUploadedFile->getRealPath(),
+            $symfonyUploadedFile->getSize(),
+            $symfonyUploadedFile->getError(),
+            $symfonyUploadedFile->getClientOriginalName(),
+            $symfonyUploadedFile->getClientMimeType()
         );
     }
 }

@@ -10,6 +10,7 @@
  */
 
 namespace Symfony\Bridge\PsrHttpMessage\Tests\Factory;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
