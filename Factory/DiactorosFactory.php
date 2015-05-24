@@ -15,8 +15,8 @@ use Symfony\Bridge\PsrHttpMessage\PsrHttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Zend\Diactoros\ServerRequest as DiactorosRequest;
 use Zend\Diactoros\Response as DiactorosResponse;
+use Zend\Diactoros\ServerRequestFactory as DiactorosRequestFactory;
 use Zend\Diactoros\UploadedFile as DiactorosUploadedFile;
 
 /**
@@ -31,14 +31,19 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
      */
     public function createRequest(Request $symfonyRequest)
     {
-        return new DiactorosRequest(
+        $request = DiactorosRequestFactory::fromGlobals(
             $symfonyRequest->server->all(),
-            array(),
-            $symfonyRequest->getUri(),
-            $symfonyRequest->getMethod(),
-            $symfonyRequest->getContent(),
-            $symfonyRequest->server->getHeaders()
+            $symfonyRequest->query->all(),
+            $symfonyRequest->request->all(),
+            $symfonyRequest->cookies->all(),
+            $this->getFiles($symfonyRequest->files->all())
         );
+
+        foreach ($symfonyRequest->attributes->all() as $key => $value) {
+            $request = $request->withAttribute($key, $value);
+        }
+
+        return $request;
     }
 
     /**
@@ -66,18 +71,6 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createResponse(Response $symfonyResponse)
-    {
-        return new DiactorosResponse(
-            $symfonyResponse->getContent(),
-            $symfonyResponse->getStatusCode(),
-            $symfonyResponse->headers->all()
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function createUploadedFile(UploadedFile $symfonyUploadedFile)
     {
         return new DiactorosUploadedFile(
@@ -86,6 +79,18 @@ class DiactorosFactory implements PsrHttpMessageFactoryInterface
             $symfonyUploadedFile->getError(),
             $symfonyUploadedFile->getClientOriginalName(),
             $symfonyUploadedFile->getClientMimeType()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createResponse(Response $symfonyResponse)
+    {
+        return new DiactorosResponse(
+            $symfonyResponse->getContent(),
+            $symfonyResponse->getStatusCode(),
+            $symfonyResponse->headers->all()
         );
     }
 }
