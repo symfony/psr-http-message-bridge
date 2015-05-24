@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Zend\Diactoros\Response as DiactorosResponse;
 use Zend\Diactoros\ServerRequestFactory as DiactorosRequestFactory;
+use Zend\Diactoros\Stream as DiactorosStream;
 use Zend\Diactoros\UploadedFile as DiactorosUploadedFile;
 
 /**
@@ -31,6 +32,13 @@ class DiactorosFactory implements HttpMessageFactoryInterface
      */
     public function createRequest(Request $symfonyRequest)
     {
+        try {
+            $stream = new DiactorosStream($symfonyRequest->getContent(true));
+        } catch (\LogicException $e) {
+            $stream = new DiactorosStream('php://temp', 'wb+');
+            $stream->write($symfonyRequest->getContent());
+        }
+
         $request = DiactorosRequestFactory::fromGlobals(
             $symfonyRequest->server->all(),
             $symfonyRequest->query->all(),
@@ -38,6 +46,8 @@ class DiactorosFactory implements HttpMessageFactoryInterface
             $symfonyRequest->cookies->all(),
             $this->getFiles($symfonyRequest->files->all())
         );
+
+        $request = $request->withBody($stream);
 
         foreach ($symfonyRequest->attributes->all() as $key => $value) {
             $request = $request->withAttribute($key, $value);

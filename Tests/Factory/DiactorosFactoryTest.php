@@ -65,6 +65,8 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
 
         $psrRequest = $this->factory->createRequest($request);
 
+        $this->assertEquals('Content', $psrRequest->getBody()->__toString());
+
         $queryParams = $psrRequest->getQueryParams();
         $this->assertEquals('1', $queryParams['foo']);
         $this->assertEquals('42', $queryParams['bar']['baz']);
