@@ -15,6 +15,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -123,5 +124,20 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Response content.', $psrResponse->getBody()->__toString());
         $this->assertEquals(202, $psrResponse->getStatusCode());
         $this->assertEquals(array('2.8'), $psrResponse->getHeader('X-Symfony'));
+    }
+
+    public function testCreateResponseFromStreamed()
+    {
+        $response = new StreamedResponse(function () {
+            echo "Line 1\n";
+            flush();
+
+            echo "Line 2\n";
+            flush();
+        });
+
+        $psrResponse = $this->factory->createResponse($response);
+
+        $this->assertEquals("Line 1\nLine 2\n", $psrResponse->getBody()->__toString());
     }
 }

@@ -15,6 +15,7 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zend\Diactoros\Response as DiactorosResponse;
 use Zend\Diactoros\ServerRequestFactory as DiactorosRequestFactory;
 use Zend\Diactoros\Stream as DiactorosStream;
@@ -98,7 +99,17 @@ class DiactorosFactory implements HttpMessageFactoryInterface
     public function createResponse(Response $symfonyResponse)
     {
         $stream = new DiactorosStream('php://temp', 'wb+');
-        $stream->write($symfonyResponse->getContent());
+        if ($symfonyResponse instanceof StreamedResponse) {
+            ob_start(function ($buffer) use ($stream) {
+                $stream->write($buffer);
+
+                return false;
+            });
+            $symfonyResponse->sendContent();
+            ob_end_clean();
+        } else {
+            $stream->write($symfonyResponse->getContent());
+        }
 
         $response = new DiactorosResponse(
             $stream,
