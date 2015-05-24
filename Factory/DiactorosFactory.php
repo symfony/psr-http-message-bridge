@@ -32,13 +32,6 @@ class DiactorosFactory implements HttpMessageFactoryInterface
      */
     public function createRequest(Request $symfonyRequest)
     {
-        try {
-            $stream = new DiactorosStream($symfonyRequest->getContent(true));
-        } catch (\LogicException $e) {
-            $stream = new DiactorosStream('php://temp', 'wb+');
-            $stream->write($symfonyRequest->getContent());
-        }
-
         $request = DiactorosRequestFactory::fromGlobals(
             $symfonyRequest->server->all(),
             $symfonyRequest->query->all(),
@@ -46,6 +39,13 @@ class DiactorosFactory implements HttpMessageFactoryInterface
             $symfonyRequest->cookies->all(),
             $this->getFiles($symfonyRequest->files->all())
         );
+
+        try {
+            $stream = new DiactorosStream($symfonyRequest->getContent(true));
+        } catch (\LogicException $e) {
+            $stream = new DiactorosStream('php://temp', 'wb+');
+            $stream->write($symfonyRequest->getContent());
+        }
 
         $request = $request->withBody($stream);
 
@@ -97,10 +97,20 @@ class DiactorosFactory implements HttpMessageFactoryInterface
      */
     public function createResponse(Response $symfonyResponse)
     {
-        return new DiactorosResponse(
-            $symfonyResponse->getContent(),
+        $stream = new DiactorosStream('php://temp', 'wb+');
+        $stream->write($symfonyResponse->getContent());
+
+        $response = new DiactorosResponse(
+            $stream,
             $symfonyResponse->getStatusCode(),
             $symfonyResponse->headers->all()
         );
+
+        $protocolVersion = $symfonyResponse->getProtocolVersion();
+        if ('1.1' !== $protocolVersion) {
+            $response = $response->withProtocolVersion($protocolVersion);
+        }
+
+        return $response;
     }
 }

@@ -14,6 +14,7 @@ namespace Symfony\Bridge\PsrHttpMessage\Tests\Factory;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -112,5 +113,15 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateResponse()
     {
+        $response = new Response(
+            'Response content.',
+            202,
+            array('X-Symfony' => array('2.8'))
+        );
+
+        $psrResponse = $this->factory->createResponse($response);
+        $this->assertEquals('Response content.', $psrResponse->getBody()->__toString());
+        $this->assertEquals(202, $psrResponse->getStatusCode());
+        $this->assertEquals(array('2.8'), $psrResponse->getHeader('X-Symfony'));
     }
 }
