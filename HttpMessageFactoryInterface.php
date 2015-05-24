@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-interface PsrHttpMessageFactoryInterface
+interface HttpMessageFactoryInterface
 {
     /**
      * Creates a PSR-7 Request instance from a Symfony one.

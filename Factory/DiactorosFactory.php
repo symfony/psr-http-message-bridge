@@ -11,7 +11,7 @@
 
 namespace Symfony\Bridge\PsrHttpMessage\Factory;
 
-use Symfony\Bridge\PsrHttpMessage\PsrHttpMessageFactoryInterface;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ use Zend\Diactoros\UploadedFile as DiactorosUploadedFile;
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-class DiactorosFactory implements PsrHttpMessageFactoryInterface
+class DiactorosFactory implements HttpMessageFactoryInterface
 {
     /**
      * {@inheritdoc}
