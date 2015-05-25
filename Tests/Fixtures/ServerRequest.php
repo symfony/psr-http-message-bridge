@@ -52,7 +52,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withRequestTarget($requestTarget)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getMethod()
@@ -71,7 +71,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getServerParams()
@@ -86,7 +86,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withCookieParams(array $cookies)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getQueryParams()
@@ -96,7 +96,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withQueryParams(array $query)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getUploadedFiles()
@@ -106,7 +106,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withUploadedFiles(array $uploadedFiles)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getParsedBody()
@@ -116,7 +116,7 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withParsedBody($data)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getAttributes()
@@ -131,11 +131,11 @@ class ServerRequest extends Message implements ServerRequestInterface
 
     public function withAttribute($name, $value)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function withoutAttribute($name)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 }

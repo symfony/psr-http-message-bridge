@@ -39,7 +39,7 @@ class Message implements MessageInterface
 
     public function withProtocolVersion($version)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getHeaders()
@@ -64,17 +64,17 @@ class Message implements MessageInterface
 
     public function withHeader($name, $value)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function withAddedHeader($name, $value)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function withoutHeader($name)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getBody()
@@ -84,6 +84,6 @@ class Message implements MessageInterface
 
     public function withBody(StreamInterface $body)
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 }

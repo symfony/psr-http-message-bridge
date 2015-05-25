@@ -35,11 +35,11 @@ class Response extends Message implements ResponseInterface
 
     public function withStatus($code, $reasonPhrase = '')
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 
     public function getReasonPhrase()
     {
-        throw \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException('Not implemented.');
     }
 }
