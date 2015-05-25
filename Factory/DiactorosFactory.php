@@ -28,6 +28,13 @@ use Zend\Diactoros\UploadedFile as DiactorosUploadedFile;
  */
 class DiactorosFactory implements HttpMessageFactoryInterface
 {
+    public function __construct()
+    {
+        if (!class_exists('Zend\Diactoros\ServerRequestFactory')) {
+            throw new \RuntimeException('Zend Diactoros must be installed ot use the DiactorosFactory.');
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -105,6 +112,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
 
                 return false;
             });
+
             $symfonyResponse->sendContent();
             ob_end_clean();
         } else {
