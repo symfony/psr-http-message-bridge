@@ -4,11 +4,9 @@ sudo: false
 
 matrix:
     include:
-        - php: 5.3
-        - php: 5.4
         - php: 5.5
         - php: 5.6
-        - php: 5.3
+        - php: 5.5
           env: deps=low
         - php: 5.6
           env: deps=high
@@ -28,7 +26,6 @@ before_install:
     - composer self-update
     - if [[ "$TRAVIS_PHP_VERSION" != "nightly" ]] && [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then phpenv config-rm xdebug.ini; fi;
     - if [[ "$TRAVIS_PHP_VERSION" != "nightly" ]] && [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]] && [ $(php -r "echo PHP_MINOR_VERSION;") -le 4 ]; then echo "extension = apc.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;
-    - if [[ "$TRAVIS_PHP_VERSION" != "nightly" ]] && [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then (cd src/Symfony/Component/Debug/Resources/ext && phpize && ./configure && make && echo "extension = $(pwd)/modules/symfony_debug.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini); fi;
     - if [[ "$TRAVIS_PHP_VERSION" != "nightly" ]] && [[ "$TRAVIS_PHP_VERSION" != "hhvm" ]]; then php -i; fi;
     # Set the COMPOSER_ROOT_VERSION to the right version according to the branch being built
     - if [ "$TRAVIS_BRANCH" = "master" ]; then export COMPOSER_ROOT_VERSION=dev-master; else export COMPOSER_ROOT_VERSION="$TRAVIS_BRANCH".x-dev; fi;
@@ -36,6 +33,8 @@ before_install:
 install:
     - if [ "$deps" = "no" ]; then export SYMFONY_DEPRECATIONS_HELPER=strict; fi;
     - if [ "$deps" = "no" ]; then composer --prefer-source install; fi;
+    - if [ "$deps" = "high" ]; then composer --prefer-source update; fi;
+    - if [ "$deps" = "low" ]; then composer --prefer-source --prefer-lowest --prefer-stable update; fi;
 
 script:
     - phpunit

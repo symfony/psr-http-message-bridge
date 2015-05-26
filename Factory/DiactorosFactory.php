@@ -31,7 +31,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
     public function __construct()
     {
         if (!class_exists('Zend\Diactoros\ServerRequestFactory')) {
-            throw new \RuntimeException('Zend Diactoros must be installed ot use the DiactorosFactory.');
+            throw new \RuntimeException('Zend Diactoros must be installed to use the DiactorosFactory.');
         }
     }
 
