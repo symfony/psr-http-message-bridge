@@ -33,11 +33,11 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
     public function createRequest(ServerRequestInterface $psrRequest)
     {
         $parsedBody = $psrRequest->getParsedBody();
-        $request = is_array($parsedBody) ? $parsedBody : array();
+        $parsedBody = is_array($parsedBody) ? $parsedBody : array();
 
         return new Request(
             $psrRequest->getQueryParams(),
-            $request,
+            $parsedBody,
             $psrRequest->getAttributes(),
             $psrRequest->getCookieParams(),
             $this->getFiles($psrRequest->getUploadedFiles()),

@@ -130,7 +130,6 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Response content.', $psrResponse->getBody()->__toString());
         $this->assertEquals(202, $psrResponse->getStatusCode());
         $this->assertEquals(array('2.8'), $psrResponse->getHeader('X-Symfony'));
-        var_dump($psrResponse->getHeader('Set-Cookie')[0]);
         $this->assertEquals(array('city=Lille; expires=Wed, 13-Jan-2021 22:23:01 GMT; path=/; httponly'), $psrResponse->getHeader('Set-Cookie'));
     }
 
