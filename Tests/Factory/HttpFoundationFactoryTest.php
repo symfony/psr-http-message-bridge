@@ -163,7 +163,13 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $response = new Response(
             '1.0',
             array(
-                'X-Symfony' => '2.8',
+                'X-Symfony' => array('2.8'),
+                'Set-Cookie' => array(
+                    'theme=light',
+                    'test',
+                    'ABC=AeD; Domain=dunglas.fr; Path=/kevin; Expires=Wed, 13 Jan 2021 22:23:01 GMT; Secure; HttpOnly',
+
+                ),
             ),
             new Stream('The response body'),
             200
@@ -173,6 +179,27 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('1.0', $symfonyResponse->getProtocolVersion());
         $this->assertEquals('2.8', $symfonyResponse->headers->get('X-Symfony'));
+
+        $cookies = $symfonyResponse->headers->getCookies();
+        $this->assertEquals('theme', $cookies[0]->getName());
+        $this->assertEquals('light', $cookies[0]->getValue());
+        $this->assertEquals(0, $cookies[0]->getExpiresTime());
+        $this->assertEquals(null, $cookies[0]->getDomain());
+        $this->assertEquals('/', $cookies[0]->getPath());
+        $this->assertEquals(false, $cookies[0]->isSecure());
+        $this->assertEquals(false, $cookies[0]->isHttpOnly());
+
+        $this->assertEquals('test', $cookies[1]->getName());
+        $this->assertEquals(null, $cookies[1]->getValue());
+
+        $this->assertEquals('ABC', $cookies[2]->getName());
+        $this->assertEquals('AeD', $cookies[2]->getValue());
+        $this->assertEquals(strtotime('Wed, 13 Jan 2021 22:23:01 GMT'), $cookies[2]->getExpiresTime());
+        $this->assertEquals('dunglas.fr', $cookies[2]->getDomain());
+        $this->assertEquals('/kevin', $cookies[2]->getPath());
+        $this->assertEquals(true, $cookies[2]->isSecure());
+        $this->assertEquals(true, $cookies[2]->isHttpOnly());
+
         $this->assertEquals('The response body', $symfonyResponse->getContent());
         $this->assertEquals(200, $symfonyResponse->getStatusCode());
     }

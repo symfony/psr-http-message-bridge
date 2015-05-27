@@ -132,10 +132,21 @@ class DiactorosFactory implements HttpMessageFactoryInterface
             $stream->write($symfonyResponse->getContent());
         }
 
+        $headers = $symfonyResponse->headers->all();
+
+        $cookies = $symfonyResponse->headers->getCookies();
+        if (!empty($cookies)) {
+            $headers['Set-Cookie'] = array();
+
+            foreach ($cookies as $coookie) {
+                $headers['Set-Cookie'][] = $coookie->__toString();
+            }
+        }
+
         $response = new DiactorosResponse(
             $stream,
             $symfonyResponse->getStatusCode(),
-            $symfonyResponse->headers->all()
+            $headers
         );
 
         $protocolVersion = $symfonyResponse->getProtocolVersion();
