@@ -35,7 +35,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
         $parsedBody = $psrRequest->getParsedBody();
         $parsedBody = is_array($parsedBody) ? $parsedBody : array();
 
-        return new Request(
+        $request = new Request(
             $psrRequest->getQueryParams(),
             $parsedBody,
             $psrRequest->getAttributes(),
@@ -44,6 +44,9 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
             $psrRequest->getServerParams(),
             $psrRequest->getBody()->__toString()
         );
+        $request->headers->replace($psrRequest->getHeaders());
+
+        return $request;
     }
 
     /**

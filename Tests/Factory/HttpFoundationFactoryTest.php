@@ -37,7 +37,10 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $stdClass = new \stdClass();
         $serverRequest = new ServerRequest(
             '1.1',
-            array(),
+            array(
+                'X-Dunglas-API-Platform' => '1.0',
+                'X-data' => array('a', 'b'),
+            ),
             new Stream('The body'),
             '/about/kevin',
             'GET',
@@ -69,6 +72,8 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Lille', $symfonyRequest->cookies->get('city'));
         $this->assertEquals('France', $symfonyRequest->server->get('country'));
         $this->assertEquals('The body', $symfonyRequest->getContent());
+        $this->assertEquals('1.0', $symfonyRequest->headers->get('X-Dunglas-API-Platform'));
+        $this->assertEquals(array('a', 'b'), $symfonyRequest->headers->get('X-data', null, false));
     }
 
     public function testCreateRequestWithNullParsedBody()
