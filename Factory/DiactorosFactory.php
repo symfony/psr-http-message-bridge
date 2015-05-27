@@ -12,6 +12,7 @@
 namespace Symfony\Bridge\PsrHttpMessage\Factory;
 
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,7 +55,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
         $request = new ServerRequest(
             $server,
             DiactorosRequestFactory::normalizeFiles($this->getFiles($symfonyRequest->files->all())),
-            DiactorosRequestFactory::marshalUriFromServer($server, $headers),
+            $symfonyRequest->getUri(),
             $symfonyRequest->getMethod(),
             $body,
             $headers
@@ -118,18 +119,22 @@ class DiactorosFactory implements HttpMessageFactoryInterface
      */
     public function createResponse(Response $symfonyResponse)
     {
-        $stream = new DiactorosStream('php://temp', 'wb+');
-        if ($symfonyResponse instanceof StreamedResponse) {
-            ob_start(function ($buffer) use ($stream) {
-                $stream->write($buffer);
-
-                return false;
-            });
-
-            $symfonyResponse->sendContent();
-            ob_end_clean();
+        if ($symfonyResponse instanceof BinaryFileResponse) {
+            $stream = new DiactorosStream($symfonyResponse->getFile()->getPathname(), 'r');
         } else {
-            $stream->write($symfonyResponse->getContent());
+            $stream = new DiactorosStream('php://temp', 'wb+');
+            if ($symfonyResponse instanceof StreamedResponse) {
+                ob_start(function ($buffer) use ($stream) {
+                    $stream->write($buffer);
+
+                    return false;
+                });
+
+                $symfonyResponse->sendContent();
+                ob_end_clean();
+            } else {
+                $stream->write($symfonyResponse->getContent());
+            }
         }
 
         $headers = $symfonyResponse->headers->all();

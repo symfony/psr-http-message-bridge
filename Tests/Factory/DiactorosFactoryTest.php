@@ -12,6 +12,7 @@
 namespace Symfony\Bridge\PsrHttpMessage\Tests\Factory;
 
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,6 +66,7 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 'REQUEST_METHOD' => 'POST',
+                'HTTP_HOST' => 'dunglas.fr',
                 'HTTP_X_SYMFONY' => '2.8',
             ),
             'Content'
@@ -146,5 +148,17 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
         $psrResponse = $this->factory->createResponse($response);
 
         $this->assertEquals("Line 1\nLine 2\n", $psrResponse->getBody()->__toString());
+    }
+
+    public function testCreateResponseFromBinaryFile()
+    {
+        $path = tempnam($this->tmpDir, uniqid());
+        file_put_contents($path, 'Binary');
+
+        $response = new BinaryFileResponse($path);
+
+        $psrResponse = $this->factory->createResponse($response);
+
+        $this->assertEquals('Binary', $psrResponse->getBody()->__toString());
     }
 }
