@@ -133,7 +133,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
      *
      * @return Cookie
      *
-     * @BadMethodCallException
+     * @throws \InvalidArgumentException
      */
     private function createCookie($cookie)
     {
@@ -183,7 +183,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
         }
 
         if (!isset($cookieName)) {
-            throw new \BadMethodCallException('The value of the Set-Cookie header is malformed.');
+            throw new \InvalidArgumentException('The value of the Set-Cookie header is malformed.');
         }
 
         return new Cookie(

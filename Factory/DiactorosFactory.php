@@ -138,8 +138,8 @@ class DiactorosFactory implements HttpMessageFactoryInterface
         if (!empty($cookies)) {
             $headers['Set-Cookie'] = array();
 
-            foreach ($cookies as $coookie) {
-                $headers['Set-Cookie'][] = $coookie->__toString();
+            foreach ($cookies as $cookie) {
+                $headers['Set-Cookie'][] = $cookie->__toString();
             }
         }
 
