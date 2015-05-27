@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Zend\Diactoros\Response as DiactorosResponse;
+use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory as DiactorosRequestFactory;
 use Zend\Diactoros\Stream as DiactorosStream;
 use Zend\Diactoros\UploadedFile as DiactorosUploadedFile;
@@ -40,22 +41,30 @@ class DiactorosFactory implements HttpMessageFactoryInterface
      */
     public function createRequest(Request $symfonyRequest)
     {
-        $request = DiactorosRequestFactory::fromGlobals(
-            $symfonyRequest->server->all(),
-            $symfonyRequest->query->all(),
-            $symfonyRequest->request->all(),
-            $symfonyRequest->cookies->all(),
-            $this->getFiles($symfonyRequest->files->all())
-        );
+        $server = DiactorosRequestFactory::normalizeServer($symfonyRequest->server->all());
+        $headers = $symfonyRequest->headers->all();
 
         try {
-            $stream = new DiactorosStream($symfonyRequest->getContent(true));
+            $body = new DiactorosStream($symfonyRequest->getContent(true));
         } catch (\LogicException $e) {
-            $stream = new DiactorosStream('php://temp', 'wb+');
-            $stream->write($symfonyRequest->getContent());
+            $body = new DiactorosStream('php://temp', 'wb+');
+            $body->write($symfonyRequest->getContent());
         }
 
-        $request = $request->withBody($stream);
+        $request = new ServerRequest(
+            $server,
+            DiactorosRequestFactory::normalizeFiles($this->getFiles($symfonyRequest->files->all())),
+            DiactorosRequestFactory::marshalUriFromServer($server, $headers),
+            $symfonyRequest->getMethod(),
+            $body,
+            $headers
+        );
+
+        $request = $request
+            ->withCookieParams($symfonyRequest->cookies->all())
+            ->withQueryParams($symfonyRequest->query->all())
+            ->withParsedBody($symfonyRequest->request->all())
+        ;
 
         foreach ($symfonyRequest->attributes->all() as $key => $value) {
             $request = $request->withAttribute($key, $value);
@@ -87,9 +96,13 @@ class DiactorosFactory implements HttpMessageFactoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a PSR-7 UploadedFile instance from a Symfony one.
+     *
+     * @param UploadedFile $symfonyUploadedFile
+     *
+     * @return UploadedFileInterface
      */
-    public function createUploadedFile(UploadedFile $symfonyUploadedFile)
+    private function createUploadedFile(UploadedFile $symfonyUploadedFile)
     {
         return new DiactorosUploadedFile(
             $symfonyUploadedFile->getRealPath(),

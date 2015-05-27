@@ -68,9 +68,13 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Creates Symfony UploadedFile instance from PSR-7 ones.
+     *
+     * @param UploadedFileInterface $psrUploadedFile
+     *
+     * @return UploadedFile
      */
-    public function createUploadedFile(UploadedFileInterface $psrUploadedFile)
+    private function createUploadedFile(UploadedFileInterface $psrUploadedFile)
     {
         $temporaryPath = $this->getTemporaryPath();
         $psrUploadedFile->moveTo($temporaryPath);

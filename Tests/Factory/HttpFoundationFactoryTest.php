@@ -11,6 +11,7 @@
 
 namespace Symfony\Bridge\PsrHttpMessage\Tests\Factory;
 
+use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Response;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\ServerRequest;
@@ -113,7 +114,7 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateUploadedFile()
     {
         $uploadedFile = $this->createUploadedFile('An uploaded file.', UPLOAD_ERR_OK, 'myfile.txt', 'text/plain');
-        $symfonyUploadedFile = $this->factory->createUploadedFile($uploadedFile);
+        $symfonyUploadedFile = $this->callCreateUploadedFile($uploadedFile);
 
         $uniqid = uniqid();
         $symfonyUploadedFile->move($this->tmpDir, $uniqid);
@@ -133,7 +134,7 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCreateUploadedFileWithError()
     {
         $uploadedFile = $this->createUploadedFile('Error.', UPLOAD_ERR_CANT_WRITE, 'e', 'text/plain');
-        $symfonyUploadedFile = $this->factory->createUploadedFile($uploadedFile);
+        $symfonyUploadedFile = $this->callCreateUploadedFile($uploadedFile);
 
         $this->assertEquals(UPLOAD_ERR_CANT_WRITE, $symfonyUploadedFile->getError());
 
@@ -146,6 +147,15 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         file_put_contents($filePath, $content);
 
         return new UploadedFile($filePath, filesize($filePath), $error, $clientFileName, $clientMediaType);
+    }
+
+    private function callCreateUploadedFile(UploadedFileInterface $uploadedFile)
+    {
+        $reflection = new \ReflectionClass($this->factory);
+        $createUploadedFile = $reflection->getMethod('createUploadedFile');
+        $createUploadedFile->setAccessible(true);
+
+        return $createUploadedFile->invokeArgs($this->factory, array($uploadedFile));
     }
 
     public function testCreateResponse()
