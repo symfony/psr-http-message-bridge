@@ -21,8 +21,7 @@
         "symfony/http-foundation": "~2.3"
     },
     "require-dev": {
-        "symfony/phpunit-bridge": "~2.7",
-        "zendframework/zend-diactoros": "~1.0"
+        "symfony/phpunit-bridge": "~2.7"
     },
     "suggest": {
         "zendframework/zend-diactoros": "To use the zend-diactoros factory"

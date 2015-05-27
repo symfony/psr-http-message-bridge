@@ -27,6 +27,10 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function setup()
     {
+        if (!class_exists('Zend\Diactoros\ServerRequestFactory')) {
+            $this->markTestSkipped('Zend Diactoros is not installed.');
+        }
+
         $this->factory = new DiactorosFactory();
         $this->tmpDir = sys_get_temp_dir();
     }
