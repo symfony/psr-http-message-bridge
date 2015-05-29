@@ -1,0 +1,236 @@
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T07:40:54Z
+
+My idea was to have separate classes for the Request and the Response converters, because a typical use case will need to convert the Request one way and the Response the other way.
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T07:52:35Z
+
+The userland API I was thinking about was:
+
+```php
+public function myAction(Request $mySymfonyRequest)
+{
+    $psr7Request = $this->get('http_message_factory')->createRequest($mySymfonyRequest);
+    $psr7Response = $somePsr7Middleware->execute($psr7Request)
+
+    return $this->get('http_foundation_factory')->createResponse($psr7Response);
+}
+
+````
+
+What do you think about it?
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T07:57:24Z
+
+As you can see, the `UploadedFile` handling is tricky because PSR-7 doesn't give access to the original `$_FILES['my_file']['tmp_name']` key.
+My current implementation works but must be double-checked and enhanced concerning error handling, security and performances.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T07:59:40Z
+
+@dunglas I don't think we will register them as services. Using them in a controller looks really weird. The use case is more for middleware compatibily IMO (a zend stragility middleware wrapping HttpKernel or an HttpKernel wrapping a zend diactoros server for instance).
+And this is also why I don't think it make sense to have the Request and Response converters in the same class as you will not need both anyway
+
+---------------------------------------------------------------------------
+
+by fabpot at 2015-05-22T08:03:13Z
+
+I was more thinking about having proxy classes. Having factories and services seems overkill here. The "converters" are going to be used at the edges anyway, not in your core code.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T08:06:35Z
+
+@fabpot having proxy classes is possible for the HttpFoundation -> PSR-7 is possible (this is what https://github.com/Sam-Burns/psr7-symfony-httpfoundation started to do), but it is also a pain to ensure that we can never perform external mutation of the wrapped objects.
+However, the opposite way is not possible (HttpFoundation does not define interfaces that we could reimplement on top of PSR-7).
+And having only the 1-way adapter is useless as a typical usecase will need to convert the request one way and the response the other way.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T08:08:29Z
+
+And this library only implements the easy parts for now (uploaded files and the body stream are not yet adapted)
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T08:55:47Z
+
+Agree with @stof, creating proxies will be a huge pain IMO.
+
+The service was just an example. I'm thinking about a way to introduce progressively PSR-7 in the core of Symfony.
+
+What do you think about the following:
+
+Additionally to `HttpFoundation\Request`, allowing to inject `Message\ServerRequestInterface` in actions of controllers:
+
+```php
+public function myAction(\Psr\Http\Message\ServerRequestInterface $psrRequest);
+```
+
+We will only need to adapt the following snippet https://github.com/symfony/symfony/blob/2.7/src/Symfony/Component/HttpKernel/Controller/ControllerResolver.php#L115 to convert the Symfony Request to the PSR one using the factory.
+
+Similarly, it is possible to add methods returning instances of PSR `ServerRequestInterface` and `ResponseInterface` (using internally the factory) to `Symfony\Component\HttpKernel\Event` and `Symfony\Component\HttpKernel\\GetResponseEvent`.
+
+It will improve drastically the interoperability of Symfony with other PSR-7 compliant libraries.
+
+---------------------------------------------------------------------------
+
+by jakzal at 2015-05-22T09:01:31Z
+
+@stof could you make a brain dump of what you had in mind to implement? :)
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T09:10:17Z
+
+@dunglas returning a PSR request from events would be a pain, because listeners are allowed to mutate the request, and we would then have to provide a way to set the updated PSR request in the event, which would then have to mutate the *existing* HttpFoundation Request. Too much trouble IMO.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T09:13:41Z
+
+@jakzal My idea was 2 have 4 converter classes (Request/Response, both ways => 4 needed).
+This is approximately what @dunglas started except he put the Request and Response conversion in the same class (which does not match the needs of actual use cases) and that I don't think interfaces are useful here (I don't see a reason to reimplement the whole conversion yourselves just to use a different PSR-7 implementation)
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T09:14:08Z
+
+@stof I've no strong opinion against splitting factories for request / response, lets do that if every one agree, but I cannot find the problem with the following:
+
+```php
+$httpFoundationFactory = new \Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory();
+$psrFactory = new \Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory();
+
+$response = new \Zend\Diactoros\Response();
+
+$done = function($request, $reponse) {
+   $symfonyResponse = $httpFoundationFactory->createResponse($reponse);
+  // Do the something the Symfony way
+};
+
+$server = new \Zend\Diactoros\Server(
+    function ($psrFactory->createRequest($symfonyRequest), $response, $done) {
+        $response->getBody()->write("Hello world!");    },
+    $request,
+    $response
+);
+```
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T09:17:32Z
+
+The interface is useful only in the Symfony -> PSR way IMO. Other implementations than the Zend one are being developed, maybe one day Symfony will develop it's own. Having the interface for that side is a way to be future-proof (just replace the factory and you can use another implementation).
+For the other, as previously said, it's for API consistency.
+
+There are also licenses issues to consider. Zend is BSD-2-clause, Symfony is MIT. Even if they are close, this can be a problem in some contexts.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T09:20:00Z
+
+@dunglas reimplementing the whole converter is the wrong solution to switch library though, because it means starting from scratch while most of the conversion will rely on the PSR-7 mutators. The right way would be to provide extension points only for the places being strictly dependent on Diactoros
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T09:22:15Z
+
+@stof Ok why not. I've not looked in details to the Diactoros internal API for now but it sounds good.
+If it's doable that way I can make the factory methods static.
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-22T09:25:40Z
+
+using static methods would make it much more complex to provide extension points (because calling code would depend on the non-extended class directly in the static calls)
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T18:14:25Z
+
+@stof I've looked deeply into Diactoros API and I'm not sure we will be able to share much building logic between implementations. In fact for all complicated things (Stream, UploadedFile, immutable server parameters), only accessors are defined by the PSR. Constructors and setters are of course implementation specific.
+
+Having a custom factory will also allow to do some performance optimizations: because of the immutability, building objects using `with*` methods instead of constructors provided by implementations imply doing a lot of `clone`.
+
+I'm start to be convinced that the API I propose will be more evolutive and will allow to do more optimizations.
+
+What do you think @stof, @symfony/deciders?
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-22T21:24:14Z
+
+To compare the two approaches, I've created a branch with following the @stof way: https://github.com/dunglas/psr-http-message-bridge/tree/split
+
+---------------------------------------------------------------------------
+
+by stof at 2015-05-23T08:33:07Z
+
+@dunglas mutators are part of PSR-7 too, not only accessors (and there is no setter on immutable objects). And I'm not sure everything can be done through the constructor
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-23T11:25:08Z
+
+Yes but mutators imply a copy of the current object. When creating the initial object (ex: from superglobals, from a raw request or from a Symfony request) it's subotimal to use with* methods instead of the implémentation API and many things are not doable using the PSR API (see my previous comment).
+
+Anyway, once the implementation done, it will be easy to switch to the design you propose if it suits better. I continue in that branch for now and split things if necessary.
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-24T17:29:47Z
+
+So I've finished a first working implementation of the Symfony <-> PSR HttpMessage bridge. One missing thing is `StreamedResponse` support (I'll take a look at that soon).
+As predicted, `DiactorosFactory` is very coupled with Diactoros. I think there is not even one line that is generic enough to be factorized with an other implementation.
+
+@symfony/deciders can you review the PR?
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-24T20:04:48Z
+
+`StreamedResponse` support added.
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-27T12:50:44Z
+
+Added cookies support.
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-27T13:04:59Z
+
+All issues raised by @stof (thank you!) should be fixed now.
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-27T21:54:20Z
+
+- [x] BinaryFileResponse support
+- [x] Use the URI of HttpFoundation
+
+---------------------------------------------------------------------------
+
+by fabpot at 2015-05-29T17:35:03Z
+
+Looks good to me.
+
+@dunglas Anything else before merging and releasing 0.1?
+
+---------------------------------------------------------------------------
+
+by dunglas at 2015-05-29T17:50:03Z
+
+Looks good to me too for this one.
+
+The last thing to do is deciding the strategy for cookie handling (copy/pasting BrowserKit, making BrowserKit a dependency or letting that as is but this can be done in a future version.
+
+I've made some tests today with the standard edition of Symfony 2.6 + SensioFrameworkExtraBundle master and it works well.
