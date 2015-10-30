@@ -17,16 +17,17 @@ use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Response;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\ServerRequest;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Stream;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
 class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /** @type HttpFoundationFactory */
+    /** @var HttpFoundationFactory */
     private $factory;
 
-    /** @type string */
+    /** @var string */
     private $tmpDir;
 
     public function setup()
@@ -212,4 +213,21 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('The response body', $symfonyResponse->getContent());
         $this->assertEquals(200, $symfonyResponse->getStatusCode());
     }
+
+    public function testUsesRequestFactoryToCreateSymfonyRequestObjects()
+    {
+        if (!method_exists('\Symfony\Component\HttpFoundation\Request', 'setFactory')) {
+            $this->markTestSkipped('Symfony Request::setFactory not supported.');
+        }
+
+        $symfony_request = new Request();
+        Request::setFactory(function() use ($symfony_request) {
+            return $symfony_request;
+        });
+
+        $request = new \Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\ServerRequest();
+
+        $this->assertSame($symfony_request, $this->factory->createRequest($request));
+    }
+
 }
