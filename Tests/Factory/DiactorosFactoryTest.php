@@ -114,7 +114,8 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetContentCanBeCalledAfterRequestCreation()
     {
-        $request = new Request(array(), array(), array(), array(), array(), array(), 'Content');
+        $header = array('HTTP_HOST' => 'dunglas.fr');
+        $request = new Request(array(), array(), array(), array(), array(), $header, 'Content');
 
         $psrRequest = $this->factory->createRequest($request);
 
