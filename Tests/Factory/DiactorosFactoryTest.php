@@ -75,7 +75,6 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
         $psrRequest = $this->factory->createRequest($request);
 
         $this->assertEquals('Content', $psrRequest->getBody()->__toString());
-        $this->assertEquals('Content', $request->getContent()); // check if getContent() can be called multiple times
 
         $queryParams = $psrRequest->getQueryParams();
         $this->assertEquals('1', $queryParams['foo']);
