@@ -1,0 +1,70 @@
+---------------------------------------------------------------------------
+
+by dunglas at 2016-02-14T19:32:13Z
+
+I've fixed this issue a while ago for all supported versions of Symfony and PHP >= 5.6: https://github.com/symfony/symfony/commit/9f9b0f73aafa1a70c87ec2eab87d5e60ce15bfda
+
+Are you sure to use PHP >= 5.6 and a up to date version of Symfony?
+
+---------------------------------------------------------------------------
+
+by aimeos at 2016-02-14T20:13:56Z
+
+Your change in Symfony is exactly causing the problem for all PHP version < 5.6.
+The patch makes it working again with 5.4/5.5.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2016-02-14T20:45:56Z
+
+We do then at least need a test to prevent breaking this again in the future.
+
+---------------------------------------------------------------------------
+
+by aimeos at 2016-02-14T21:20:20Z
+
+Done. Are you able to create a new release soon?
+
+---------------------------------------------------------------------------
+
+by aimeos at 2016-02-15T13:05:59Z
+
+@dunglas Are you willing to merge the PR and create a new release?
+
+---------------------------------------------------------------------------
+
+by dunglas at 2016-02-15T13:08:32Z
+
+Yes but I need to review it first and it must be accepted by at least 2 members of the core team including me.
+
+---------------------------------------------------------------------------
+
+by dunglas at 2016-02-15T13:09:44Z
+
+The code looks good to me :+1:
+
+Ping @symfony/deciders
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2016-02-15T13:21:05Z
+
+:+1: for the fix, but moving the assertion to a dedicated test imho would make it more clear what we want to ensure
+
+---------------------------------------------------------------------------
+
+by aimeos at 2016-02-15T13:47:13Z
+
+@xabbuh @dunglas @symfony/deciders Done moving to own test
+
+---------------------------------------------------------------------------
+
+by aimeos at 2016-02-16T13:17:19Z
+
+@dunglas @xabbuh Can you explicitly ask one of the other core developers to have a look? It's really important for us to get this merged. Thanks :-)
+
+---------------------------------------------------------------------------
+
+by fabpot at 2016-02-16T13:18:56Z
+
+Both @dunglas and @xabbuh are part of the core team. You got two +1, so this is ready to be merged. ping @dunglas
