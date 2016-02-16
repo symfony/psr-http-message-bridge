@@ -45,7 +45,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
         $server = DiactorosRequestFactory::normalizeServer($symfonyRequest->server->all());
         $headers = $symfonyRequest->headers->all();
 
-        if(PHP_VERSION_ID < 50600) {
+        if (PHP_VERSION_ID < 50600) {
             $body = new DiactorosStream('php://temp', 'wb+');
             $body->write($symfonyRequest->getContent());
         } else {
