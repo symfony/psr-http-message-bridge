@@ -17,6 +17,7 @@ use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Response;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\ServerRequest;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Stream;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\UploadedFile;
+use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\Uri;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -47,7 +48,7 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
             new Stream('The body'),
             '/about/kevin',
             'GET',
-            'http://les-tilleuls.coop/about/kevin',
+            new Uri('http://les-tilleuls.coop/about/kevin'),
             array('country' => 'France'),
             array('city' => 'Lille'),
             array('url' => 'http://les-tilleuls.coop'),
