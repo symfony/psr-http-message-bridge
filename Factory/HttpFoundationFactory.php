@@ -37,9 +37,9 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
         $uri = $psrRequest->getUri();
 
         if ($uri instanceof UriInterface) {
-            $server['SERVER_NAME']  = $uri->getHost();
-            $server['SERVER_PORT']  = $uri->getPort();
-            $server['REQUEST_URI']  = $uri->getPath();
+            $server['SERVER_NAME'] = $uri->getHost();
+            $server['SERVER_PORT'] = $uri->getPort();
+            $server['REQUEST_URI'] = $uri->getPath();
             $server['QUERY_STRING'] = $uri->getQuery();
         }
 

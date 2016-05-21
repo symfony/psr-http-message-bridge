@@ -54,11 +54,11 @@ class Uri implements UriInterface
 
         $authority = $this->host;
 
-        if (! empty($this->userInfo)) {
-            $authority = $this->userInfo . '@' . $authority;
+        if (!empty($this->userInfo)) {
+            $authority = $this->userInfo.'@'.$authority;
         }
 
-        $authority .= ':' . $this->port;
+        $authority .= ':'.$this->port;
 
         return $authority;
 
