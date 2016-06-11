@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Zend\Diactoros\PhpInputStream as DiactorosPhpInputStream;
 use Zend\Diactoros\Response as DiactorosResponse;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory as DiactorosRequestFactory;
@@ -49,7 +50,14 @@ class DiactorosFactory implements HttpMessageFactoryInterface
             $body = new DiactorosStream('php://temp', 'wb+');
             $body->write($symfonyRequest->getContent());
         } else {
-            $body = new DiactorosStream($symfonyRequest->getContent(true));
+            $bodyStream = $symfonyRequest->getContent(true);
+            $bodyStreamMetaData = stream_get_meta_data($bodyStream);
+
+            if($bodyStreamMetaData['uri'] == 'php://input') {
+                $body = new DiactorosPhpInputStream($bodyStream);
+            } else {
+                $body = new DiactorosStream($bodyStream);
+            }
         }
 
         $request = new ServerRequest(
