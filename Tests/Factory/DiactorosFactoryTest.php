@@ -111,7 +111,7 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('2.8'), $psrRequest->getHeader('X-Symfony'));
     }
 
-    public function testGetContentCanBeCalledAfterRequestCreation()
+    public function testGetContentCanBeCalledAfterRequestCreationWithStream()
     {
         $header = array('HTTP_HOST' => 'dunglas.fr');
         $request = new Request(array(), array(), array(), array(), array(), $header, 'Content');
@@ -120,6 +120,16 @@ class DiactorosFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Content', $psrRequest->getBody()->__toString());
         $this->assertEquals('Content', $request->getContent());
+    }
+
+    public function testGetBodyWillReturnPhpInputStreamByDefault()
+    {
+        $header = array('HTTP_HOST' => 'dunglas.fr');
+        $request = new Request(array(), array(), array(), array(), array(), $header, null);
+
+        $psrRequest = $this->factory->createRequest($request);
+
+        $this->assertInstanceOf('Zend\Diactoros\PhpInputStream', $psrRequest->getBody());
     }
 
     private function createUploadedFile($content, $originalName, $mimeType, $error)
