@@ -50,13 +50,11 @@ class DiactorosFactory implements HttpMessageFactoryInterface
         $bodyStreamMetaData = stream_get_meta_data($bodyStream);
         if('php://input' == $bodyStreamMetaData['uri']) {
             $body = new PhpInputStream($bodyStream);
+        } else if (PHP_VERSION_ID < 50600) {
+            $body = new DiactorosStream('php://temp', 'wb+');
+            $body->write($symfonyRequest->getContent());
         } else {
-            if (PHP_VERSION_ID < 50600) {
-                $body = new DiactorosStream('php://temp', 'wb+');
-                $body->write($symfonyRequest->getContent());
-            } else {
-                $body = new DiactorosStream($bodyStream);
-            }
+            $body = new DiactorosStream($bodyStream);
         }
 
         $request = new ServerRequest(
