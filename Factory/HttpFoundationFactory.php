@@ -110,6 +110,9 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
      */
     public function createResponse(ResponseInterface $psrResponse)
     {
+        $cookies = $psrResponse->getHeader('Set-Cookie');
+        $psrResponse = $psrResponse->withHeader('Set-Cookie', '');
+
         $response = new Response(
             $psrResponse->getBody()->__toString(),
             $psrResponse->getStatusCode(),
@@ -117,7 +120,7 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
         );
         $response->setProtocolVersion($psrResponse->getProtocolVersion());
 
-        foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
+        foreach ($cookies as $cookie) {
             $response->headers->setCookie($this->createCookie($cookie));
         }
 
