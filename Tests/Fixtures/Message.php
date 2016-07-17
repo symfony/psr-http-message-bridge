@@ -64,7 +64,7 @@ class Message implements MessageInterface
 
     public function withHeader($name, $value)
     {
-      if (is_string($value) || is_Array($value)) {
+      if (is_string($value) || is_array($value)) {
         $this->headers[$name] = $value;
       }
       return $this;
