@@ -61,7 +61,6 @@ class Uri implements UriInterface
         $authority .= ':'.$this->port;
 
         return $authority;
-
     }
 
     public function getUserInfo()
