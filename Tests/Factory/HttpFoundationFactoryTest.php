@@ -48,7 +48,7 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
             new Stream('The body'),
             '/about/kevin',
             'GET',
-            new Uri('http://les-tilleuls.coop/about/kevin'),
+            'http://les-tilleuls.coop/about/kevin',
             array('country' => 'France'),
             array('city' => 'Lille'),
             array('url' => 'http://les-tilleuls.coop'),
@@ -119,6 +119,26 @@ class HttpFoundationFactoryTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertCount(0, $this->factory->createRequest($serverRequest)->request);
+    }
+
+    public function testCreateRequestWithUri()
+    {
+        $serverRequest = new ServerRequest(
+            '1.1',
+            array(),
+            new Stream(),
+            '/',
+            'GET',
+            new Uri('http://les-tilleuls.coop/about/kevin'),
+            array(),
+            array(),
+            array(),
+            array(),
+            null,
+            array()
+        );
+
+        $this->assertEquals('/about/kevin', $this->factory->createRequest($serverRequest)->getPathInfo());
     }
 
     public function testCreateUploadedFile()
