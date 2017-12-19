@@ -1,0 +1,72 @@
+---------------------------------------------------------------------------
+
+by mtibben at 2017-05-04T00:48:10Z
+
+I've added a fix for the issue.
+
+The failing tests here are also failing on master.
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2017-05-04T19:28:03Z
+
+I opened #31 to fix the test suite.
+
+---------------------------------------------------------------------------
+
+by fabpot at 2017-05-04T19:47:16Z
+
+@mtibben You can now rebase to validate that tests pass now.
+
+---------------------------------------------------------------------------
+
+by mtibben at 2017-05-04T21:31:38Z
+
+I'm traveling over the next week without computer, feel free to rebase :)
+
+On Fri, 5 May 2017, 5:47 AM Fabien Potencier <notifications@github.com>
+wrote:
+
+> @mtibben <https://github.com/mtibben> You can now rebase to validate that
+> tests pass now.
+>
+> —
+> You are receiving this because you were mentioned.
+>
+>
+> Reply to this email directly, view it on GitHub
+> <https://github.com/symfony/psr-http-message-bridge/pull/30#issuecomment-299289771>,
+> or mute the thread
+> <https://github.com/notifications/unsubscribe-auth/AA72E05_N9MVyCcrKWadhAkFLfH-9_3Kks5r2itFgaJpZM4NPS_g>
+> .
+>
+
+---------------------------------------------------------------------------
+
+by mtibben at 2017-05-14T23:46:38Z
+
+Rebased, and tests are passing @fabpot
+
+---------------------------------------------------------------------------
+
+by mtibben at 2017-06-04T23:31:15Z
+
+Any further feedback on this @xabbuh @fabpot ?
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2017-06-05T06:51:42Z
+
+I did not have the time to dig deeper, but I would prefer to first check why the `ServerRequest` class behaves this way and if this isn't a bug that needs to be fixed there.
+
+---------------------------------------------------------------------------
+
+by mtibben at 2017-12-18T02:29:53Z
+
+Any further feedback on this @xabbuh? I don't believe `ServerRequest` is the issue, the issue is `Request::getUri` (see https://github.com/symfony/psr-http-message-bridge/pull/30#discussion_r116972554)
+
+---------------------------------------------------------------------------
+
+by xabbuh at 2017-12-18T06:42:31Z
+
+I tried to debug this and IIRC the factory behaves differently depending on how you pass the request URI (through the constructor or with `withRequestTarget()`). Thus, I think this change looks indeed valid.
