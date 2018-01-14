@@ -47,12 +47,9 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
 
         $server = array_replace($server, $psrRequest->getServerParams());
 
-        $parsedBody = $psrRequest->getParsedBody();
-        $parsedBody = is_array($parsedBody) ? $parsedBody : array();
-
-        $request = new Request(
-            $psrRequest->getQueryParams(),
-            $parsedBody,
+        $request = Request::create(
+            $psrRequest->getUri()->__toString(),
+            $psrRequest->getMethod(),
             $psrRequest->getAttributes(),
             $psrRequest->getCookieParams(),
             $this->getFiles($psrRequest->getUploadedFiles()),
