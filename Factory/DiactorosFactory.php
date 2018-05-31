@@ -112,7 +112,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
     {
         return new DiactorosUploadedFile(
             $symfonyUploadedFile->getRealPath(),
-            $symfonyUploadedFile->getClientSize(),
+            $symfonyUploadedFile->getSize(),
             $symfonyUploadedFile->getError(),
             $symfonyUploadedFile->getClientOriginalName(),
             $symfonyUploadedFile->getClientMimeType()
