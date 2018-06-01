@@ -153,7 +153,7 @@ class DiactorosFactoryTest extends TestCase
         $cookieHeader = $psrResponse->getHeader('Set-Cookie');
         $this->assertInternalType('array', $cookieHeader);
         $this->assertCount(1, $cookieHeader);
-        $this->assertRegExp('{city=Lille; expires=Wed, 13-Jan-2021 22:23:01 GMT;( max-age=\d+;)? path=/; httponly}', $cookieHeader[0]);
+        $this->assertRegExp('{city=Lille; expires=Wed, 13-Jan-2021 22:23:01 GMT;( (?i)max-age(?-i)=\d+;)? path=/; httponly}', $cookieHeader[0]);
     }
 
     public function testCreateResponseFromStreamed()
@@ -189,7 +189,6 @@ class DiactorosFactoryTest extends TestCase
         $this->assertEquals(0, $file->getSize());
         $this->assertEquals(UPLOAD_ERR_NO_FILE, $file->getError());
         $this->assertFalse($file->getSize(), 'SplFile::getSize() returns false on error');
-        $this->assertInternalType('integer', $file->getClientSize());
 
         $request = new Request(array(), array(), array(), array(),
           array(
