@@ -189,7 +189,6 @@ class DiactorosFactoryTest extends TestCase
         $this->assertEquals(0, $file->getSize());
         $this->assertEquals(UPLOAD_ERR_NO_FILE, $file->getError());
         $this->assertFalse($file->getSize(), 'SplFile::getSize() returns false on error');
-        $this->assertInternalType('integer', $file->getClientSize());
 
         $request = new Request(array(), array(), array(), array(),
           array(
