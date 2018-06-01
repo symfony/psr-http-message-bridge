@@ -147,7 +147,7 @@ class HttpFoundationFactoryTest extends TestCase
         $uploadedFile = $this->createUploadedFile('An uploaded file.', UPLOAD_ERR_OK, 'myfile.txt', 'text/plain');
         $symfonyUploadedFile = $this->callCreateUploadedFile($uploadedFile);
 
-        $this->assertEquals($uploadedFile->getSize(), $symfonyUploadedFile->getClientSize());
+        $this->assertEquals($uploadedFile->getSize(), $symfonyUploadedFile->getSize());
         $this->assertEquals(UPLOAD_ERR_OK, $symfonyUploadedFile->getError());
         $this->assertEquals('myfile.txt', $symfonyUploadedFile->getClientOriginalName());
         $this->assertEquals('txt', $symfonyUploadedFile->getClientOriginalExtension());
