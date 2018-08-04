@@ -18,6 +18,7 @@ use Psr\Http\Message\UriInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -104,6 +105,16 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
             $clientFileName = $psrUploadedFile->getClientFilename();
         }
 
+        if (class_exists(HeaderUtils::class)) {
+            // Symfony 4.1+
+            return new UploadedFile(
+                $temporaryPath,
+                null === $clientFileName ? '' : $clientFileName,
+                $psrUploadedFile->getClientMediaType(),
+                $psrUploadedFile->getError(),
+                true
+            );
+        }
 
         return new UploadedFile(
             $temporaryPath,
