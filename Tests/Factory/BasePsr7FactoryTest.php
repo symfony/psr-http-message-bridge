@@ -17,6 +17,7 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -132,6 +133,10 @@ abstract class BasePsr7FactoryTest extends TestCase
         $path = tempnam($this->tmpDir, uniqid());
         file_put_contents($path, $content);
 
+        if (class_exists(HeaderUtils::class)) {
+            // Symfony 4.1+
+            return new UploadedFile($path, $originalName, $mimeType, $error, true);
+        }
         return new UploadedFile($path, $originalName, $mimeType, filesize($path), $error, true);
     }
 
@@ -184,7 +189,12 @@ abstract class BasePsr7FactoryTest extends TestCase
 
     public function testUploadErrNoFile()
     {
-        $file = new UploadedFile('', '', null, 0, UPLOAD_ERR_NO_FILE, true);
+        if (class_exists(HeaderUtils::class)) {
+            // Symfony 4.1+
+            $file = new UploadedFile('', '', null, UPLOAD_ERR_NO_FILE, true);
+        } else {
+            $file = new UploadedFile('', '', null, 0, UPLOAD_ERR_NO_FILE, true);
+        }
         $this->assertEquals(0, $file->getSize());
         $this->assertEquals(UPLOAD_ERR_NO_FILE, $file->getError());
         $this->assertFalse($file->getSize(), 'SplFile::getSize() returns false on error');
