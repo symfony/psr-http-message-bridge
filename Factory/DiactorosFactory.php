@@ -11,6 +11,7 @@
 
 namespace Symfony\Bridge\PsrHttpMessage\Factory;
 
+use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -112,7 +113,7 @@ class DiactorosFactory implements HttpMessageFactoryInterface
     {
         return new DiactorosUploadedFile(
             $symfonyUploadedFile->getRealPath(),
-            $symfonyUploadedFile->getClientSize(),
+            (int) $symfonyUploadedFile->getSize(),
             $symfonyUploadedFile->getError(),
             $symfonyUploadedFile->getClientOriginalName(),
             $symfonyUploadedFile->getClientMimeType()
@@ -143,16 +144,6 @@ class DiactorosFactory implements HttpMessageFactoryInterface
         }
 
         $headers = $symfonyResponse->headers->all();
-
-        $cookies = $symfonyResponse->headers->getCookies();
-        if (!empty($cookies)) {
-            $headers['Set-Cookie'] = array();
-
-            foreach ($cookies as $cookie) {
-                $headers['Set-Cookie'][] = $cookie->__toString();
-            }
-        }
-
         $response = new DiactorosResponse(
             $stream,
             $symfonyResponse->getStatusCode(),
