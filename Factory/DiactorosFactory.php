@@ -144,16 +144,6 @@ class DiactorosFactory implements HttpMessageFactoryInterface
         }
 
         $headers = $symfonyResponse->headers->all();
-
-        $cookies = $symfonyResponse->headers->getCookies();
-        if (!empty($cookies)) {
-            $headers['Set-Cookie'] = array();
-
-            foreach ($cookies as $cookie) {
-                $headers['Set-Cookie'][] = $cookie->__toString();
-            }
-        }
-
         $response = new DiactorosResponse(
             $stream,
             $symfonyResponse->getStatusCode(),
