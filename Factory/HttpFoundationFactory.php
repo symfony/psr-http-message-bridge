@@ -104,10 +104,12 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
             $clientFileName = $psrUploadedFile->getClientFilename();
         }
 
+
         return new UploadedFile(
             $temporaryPath,
             null === $clientFileName ? '' : $clientFileName,
             $psrUploadedFile->getClientMediaType(),
+            $psrUploadedFile->getSize(),
             $psrUploadedFile->getError(),
             true
         );
