@@ -1,0 +1,37 @@
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2018-08-04T07:30:43Z
+
+Should we bump to v2 then?
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2018-08-04T07:34:43Z
+
+Yes, And introduce PSR17 factories. The PSR17 does not support php5.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2018-08-04T12:59:01Z
+
+I just had a look at #43. That implementation makes it optional to use PSR 17 (HTTP factories). Then it makes no sense to drop PHP versions.
+
+This PR brings no changes nor drops any functionality.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2018-08-04T17:08:07Z
+
+Wohoo build passes on Travis!
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2018-08-07T08:28:11Z
+
+Ping @nicolas-grekas
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2018-08-07T11:05:29Z
+
+Travis is happy again
