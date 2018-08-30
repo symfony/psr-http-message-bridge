@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------
+
+by ajgarlag at 2018-08-01T12:33:54Z
+
+Ready for review.
+
+There are two different errors when testing in PHP >= 7.1, but they are not related to this PR.
+
+---------------------------------------------------------------------------
+
+by ajgarlag at 2018-08-06T06:43:45Z
+
+Thanks @Nyholm for the review. I'll wait for #45 to be merged.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2018-08-08T14:43:19Z
+
+Could you rebase on master now? The master branch is green on travis.
+
+---------------------------------------------------------------------------
+
+by ajgarlag at 2018-08-08T21:17:50Z
+
+@Nyholm Travis is happy with this PR
+
+---------------------------------------------------------------------------
+
+by ajgarlag at 2018-08-22T10:23:13Z
+
+Is there anything I can do to get this PR merged?
