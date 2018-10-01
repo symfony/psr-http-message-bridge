@@ -13,13 +13,14 @@ namespace Symfony\Bridge\PsrHttpMessage\Factory;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * {@inheritdoc}
@@ -28,6 +29,19 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class HttpFoundationFactory implements HttpFoundationFactoryInterface
 {
+    /**
+     * @var int Maximum output buffering size for each iteration when sending the response.
+     */
+    private $responseBufferMaxLength;
+
+    /**
+     * @param int $responseBufferMaxLength
+     */
+    public function __construct($responseBufferMaxLength = 8192)
+    {
+        $this->responseBufferMaxLength = $responseBufferMaxLength;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -140,11 +154,12 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
      */
     public function createResponse(ResponseInterface $psrResponse)
     {
-        $response = new Response(
-            $psrResponse->getBody()->__toString(),
+        $response = new StreamedResponse(
+            $this->createStreamedResponseCallback($psrResponse->getBody()),
             $psrResponse->getStatusCode(),
             $psrResponse->getHeaders()
         );
+
         $response->setProtocolVersion($psrResponse->getProtocolVersion());
 
         foreach ($psrResponse->getHeader('Set-Cookie') as $cookie) {
@@ -225,5 +240,31 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
             isset($cookieSecure),
             isset($cookieHttpOnly)
         );
+    }
+
+    /**
+     * @param StreamInterface $body
+     *
+     * @return callable
+     */
+    private function createStreamedResponseCallback(StreamInterface $body)
+    {
+        $responseBufferMaxLength = $this->responseBufferMaxLength;
+
+        return function () use ($body, $responseBufferMaxLength) {
+            if ($body->isSeekable()) {
+                $body->rewind();
+            }
+
+            if (! $body->isReadable()) {
+                echo $body;
+
+                return;
+            }
+
+            while (! $body->eof()) {
+                echo $body->read($responseBufferMaxLength);
+            }
+        };
     }
 }
