@@ -231,7 +231,11 @@ class HttpFoundationFactoryTest extends TestCase
         $this->assertTrue($cookies[2]->isSecure());
         $this->assertTrue($cookies[2]->isHttpOnly());
 
-        $this->assertEquals('The response body', $symfonyResponse->getContent());
+        ob_start();
+        $symfonyResponse->sendContent();
+        $sentContent = ob_get_clean();
+
+        $this->assertEquals('The response body', $sentContent);
         $this->assertEquals(200, $symfonyResponse->getStatusCode());
     }
 }
