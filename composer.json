@@ -23,6 +23,9 @@
     "require-dev": {
         "symfony/phpunit-bridge": "^3.4 || 4.0"
     },
+    "conflict": {
+        "zendframework/zend-diactoros": ">= 2.0.0"
+    },
     "suggest": {
         "psr/http-message-implementation": "To use the HttpFoundation factory",
         "zendframework/zend-diactoros": "To use the Zend Diactoros factory",
