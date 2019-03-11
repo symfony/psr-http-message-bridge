@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2019-03-11T14:52:24Z
+
+LGTM, but let's replace `Diactoros` by your package instead.
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2019-03-11T15:14:44Z
+
+Thank you for the review.
+
+Rebased!
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2019-03-11T16:03:59Z
+
+Fabbot is happy =)
+
+Just going to fix the test.. Doing it now
+
+---------------------------------------------------------------------------
+
+by Nyholm at 2019-03-11T17:48:03Z
+
+Tests should be green now
