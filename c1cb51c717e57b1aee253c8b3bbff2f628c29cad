@@ -1,0 +1,53 @@
+---------------------------------------------------------------------------
+
+by danizord at 2018-09-26T18:53:25Z
+
+It seems like Travis is happy but fabbot.io failed with "Not Found" 🤔
+
+---------------------------------------------------------------------------
+
+by danizord at 2018-11-14T16:17:29Z
+
+Ping @stof @fabpot @dunglas in case you missed it 😄
+
+---------------------------------------------------------------------------
+
+by danizord at 2018-11-21T00:57:23Z
+
+@dunglas done :)
+
+---------------------------------------------------------------------------
+
+by jdecool at 2019-02-21T15:04:35Z
+
+What about this PR ?
+
+Is it still relevant ? This is a nice feature to add in this component.
+
+---------------------------------------------------------------------------
+
+by danizord at 2019-02-21T17:47:26Z
+
+Hey @jdecool! @jvasseur suggested to make it configurable, but I'm not sure how 🤔
+
+Any suggestions?
+
+---------------------------------------------------------------------------
+
+by jdecool at 2019-02-21T17:55:55Z
+
+Maybe by creating a another method ?
+
+Don't touch `createResponse` method and add a new `createStreamedResponse` ?
+
+---------------------------------------------------------------------------
+
+by jdecool at 2019-02-24T18:03:49Z
+
+@danizord do you need help to finish this PR ?
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2019-03-11T16:01:25Z
+
+I rebased the PR and made the behavior opt-in by adding a new `bool $streamed` argument to `createResponse()`
