@@ -1,0 +1,45 @@
+---------------------------------------------------------------------------
+
+by zerkms at 2018-10-05T19:54:46Z
+
+Should not it also have added changes to `.travis.yml` to install `zendframework/zend-diactoros:^2.0.0`?
+
+---------------------------------------------------------------------------
+
+by uphlewis at 2018-10-05T20:25:51Z
+
+Feel free to edit. Would just be good to get this through cause currently
+it's incompatible when installing latest stable of both packages with
+composer
+
+On Fri, 5 Oct 2018, 20:54 Ivan Kurnosov, <notifications@github.com> wrote:
+
+> Should not it also have added changes to .travis.yml to install
+> zendframework/zend-diactoros:^2.0.0?
+>
+> —
+> You are receiving this because you authored the thread.
+> Reply to this email directly, view it on GitHub
+> <https://github.com/symfony/psr-http-message-bridge/pull/54#issuecomment-427480982>,
+> or mute the thread
+> <https://github.com/notifications/unsubscribe-auth/ApVoWWaEJhGpdaUGhFmGLLNXXZrV0XEHks5uh7kJgaJpZM4XIiZ->
+> .
+>
+
+---------------------------------------------------------------------------
+
+by massimilianobraglia at 2018-10-18T10:21:34Z
+
+Hey all, thanks for this component. Any news about this PR?
+
+---------------------------------------------------------------------------
+
+by tobscure at 2018-12-16T22:26:11Z
+
+What's the status of this?
+
+---------------------------------------------------------------------------
+
+by Big-Shark at 2019-01-14T20:17:09Z
+
+@dunglas @stof @xthiago Please, merge this
