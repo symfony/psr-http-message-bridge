@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by alexpott at 2019-04-03T17:03:52Z
+
+Drupal 8 needs this too! Cause we still support PHP 5 on some versions - see https://www.drupal.org/project/drupal/issues/3045483#comment-13052792
