@@ -111,7 +111,20 @@ class HttpFoundationFactory implements HttpFoundationFactoryInterface
         $clientFileName = '';
         if (UPLOAD_ERR_NO_FILE !== $psrUploadedFile->getError()) {
             $temporaryPath = $this->getTemporaryPath();
-            $psrUploadedFile->moveTo($temporaryPath);
+
+            $stream = $psrUploadedFile->getStream();
+            $originalPosition = $stream->tell();
+            $isSeekable = $stream->isSeekable();
+
+            if ($isSeekable) {
+                $stream->rewind();
+            }
+
+            file_put_contents($temporaryPath, $stream->getContents());
+
+            if ($isSeekable) {
+                $stream->seek($originalPosition);
+            }
 
             $clientFileName = $psrUploadedFile->getClientFilename();
         }
