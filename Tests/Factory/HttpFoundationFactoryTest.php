@@ -174,6 +174,15 @@ class HttpFoundationFactoryTest extends TestCase
         $symfonyUploadedFile->move($this->tmpDir, 'shouldFail.txt');
     }
 
+    public function testCreateUploadedFileTwice()
+    {
+        $uploadedFile = $this->createUploadedFile('An uploaded file.', UPLOAD_ERR_OK, 'myfile.txt', 'text/plain');
+        $symfonyUploadedFile = $this->callCreateUploadedFile($uploadedFile);
+        $symfonyUploadedFile2 = $this->callCreateUploadedFile($uploadedFile);
+
+        $this->assertEquals($symfonyUploadedFile2->getSize(), $symfonyUploadedFile->getSize());
+    }
+
     private function createUploadedFile($content, $error, $clientFileName, $clientMediaType)
     {
         $filePath = tempnam($this->tmpDir, uniqid());
