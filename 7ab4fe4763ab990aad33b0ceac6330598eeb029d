@@ -1,0 +1,5 @@
+---------------------------------------------------------------------------
+
+by rbaarsma at 2019-11-23T14:47:03Z
+
+Travis will succeed when https://github.com/symfony/psr-http-message-bridge/pull/69 is merged
