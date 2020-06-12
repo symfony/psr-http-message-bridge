@@ -72,7 +72,15 @@ class PsrHttpFactory implements HttpMessageFactoryInterface
             $request = $request->withAttribute($key, $value);
         }
 
-        return $request;
+        $queryString = urldecode($symfonyRequest->server->get('QUERY_STRING', ''));
+
+        return $request
+            ->withUri(
+              $request
+                ->getUri()
+                ->withQuery($queryString)
+            )
+            ->withQueryParams(iterator_to_array($this->parseStr($queryString)));
     }
 
     /**
@@ -165,4 +173,35 @@ class PsrHttpFactory implements HttpMessageFactoryInterface
 
         return $response;
     }
+
+    /**
+     * Custom parse_str() function that doesn't alter the parameters key value.
+     *
+     * @return \Generator<string, string>
+     */
+  private function parseStr(string $queryString): \Generator
+  {
+      parse_str(
+          array_reduce(
+              ['urldecode', 'bin2hex'],
+              static function (string $queryString, callable $callback): string {
+                  return (string) preg_replace_callback(
+                    '/(?<key>[^&=]+?)(?:\[[^&=]*\])?=(?<value>[^&=]+)/',
+                      static function (array $match) use ($callback): string {
+                          return str_replace($match['key'], $callback($match['key']), $match[0]);
+                      },
+                      $queryString
+                  );
+              },
+              $queryString
+          ),
+          $parameters
+      );
+
+      foreach ($parameters as $key => $value) {
+          yield (string) hex2bin($key) => $value;
+      }
+
+      return yield from [];
+  }
 }

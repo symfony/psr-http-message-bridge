@@ -153,7 +153,7 @@ class CovertTest extends TestCase
         $psr17Factory = new PsrHttpFactory($nyholmFactory, $nyholmFactory, $nyholmFactory, $nyholmFactory);
         $symfonyFactory = new HttpFoundationFactory();
 
-      $psr7ServerRequestWithDots = (new Psr7Request('GET', 'http://localhost/api?foo.bar=foodotbar&foo.led[]=IamNot&foo.led[]=fooled&and another one=please fix me'))
+        $psr7ServerRequestWithDots = (new Psr7Request('GET', 'http://localhost/api?foo.bar=foodotbar&foo.led[]=IamNot&foo.led[]=fooled&and another one=please fix me'))
         ->withQueryParams([
           'foo.bar' => 'foodotbar',
           'foo.led' => [
