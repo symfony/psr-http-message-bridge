@@ -94,6 +94,7 @@ class CovertTest extends TestCase
             $this->assertEquals($request->getMethod(), $finalRequest->getMethod());
             $this->assertEquals($request->getRequestTarget(), $finalRequest->getRequestTarget());
             $this->assertEquals((string) $request->getUri(), (string) $finalRequest->getUri());
+            $this->assertEquals($request->getUri()->getQuery(), $finalRequest->getUri()->getQuery());
             $this->assertEquals((string) $request->getBody(), (string) $finalRequest->getBody());
             $this->assertEquals($strToLower($request->getHeaders()), $strToLower($finalRequest->getHeaders()));
             $this->assertEquals($request->getProtocolVersion(), $finalRequest->getProtocolVersion());
@@ -152,10 +153,20 @@ class CovertTest extends TestCase
         $psr17Factory = new PsrHttpFactory($nyholmFactory, $nyholmFactory, $nyholmFactory, $nyholmFactory);
         $symfonyFactory = new HttpFoundationFactory();
 
+      $psr7ServerRequestWithDots = (new Psr7Request('GET', 'http://localhost/api?foo.bar=foodotbar&foo.led[]=IamNot&foo.led[]=fooled&and another one=please fix me'))
+        ->withQueryParams([
+          'foo.bar' => 'foodotbar',
+          'foo.led' => [
+            'IamNot',
+            'fooled',
+          ],
+          'and another one' => 'please fix me',
+        ]);
+
         return array_merge([
             [$sfRequest, $psr17Factory, $symfonyFactory],
-        ], array_map(function ($psr7Request) use ($symfonyFactory, $psr17Factory) {
-            return [$psr7Request, $symfonyFactory, $psr17Factory];
+        ], array_map(function ($psr7Request) use ($symfonyFactory, $psr17Factory, $psr7ServerRequestWithDots) {
+            return [$psr7Request, $symfonyFactory, $psr17Factory, $psr7ServerRequestWithDots];
         }, $psr7Requests));
     }
 
