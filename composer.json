@@ -22,7 +22,8 @@
     },
     "require-dev": {
         "symfony/phpunit-bridge": "^4.4 || ^5.0",
-        "nyholm/psr7": "^1.1"
+        "nyholm/psr7": "^1.1",
+        "symfony/form": "^4.4|^5.0"
     },
     "suggest": {
         "nyholm/psr7": "For a super lightweight PSR-7/17 implementation"
