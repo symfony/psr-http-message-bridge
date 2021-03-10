@@ -21,8 +21,10 @@
         "symfony/http-foundation": "^4.4 || ^5.0"
     },
     "require-dev": {
+        "laminas/laminas-diactoros": "^2.4",
         "symfony/browser-kit": "^4.4 || ^5.0",
         "symfony/config": "^4.4 || ^5.0",
+        "symfony/dependency-injection": "^4.4 || ^5.0",
         "symfony/event-dispatcher": "^4.4 || ^5.0",
         "symfony/framework-bundle": "^4.4 || ^5.0",
         "symfony/http-kernel": "^4.4 || ^5.0",
@@ -41,7 +43,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "2.1-dev"
+            "dev-main": "2.2-dev"
         }
     }
 }

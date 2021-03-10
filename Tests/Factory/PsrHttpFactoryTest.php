@@ -23,6 +23,10 @@ class PsrHttpFactoryTest extends AbstractHttpMessageFactoryTest
 {
     protected function buildHttpMessageFactory(): HttpMessageFactoryInterface
     {
+        if (!class_exists(Psr17Factory::class)) {
+            self::markTestSkipped('This test requires nyholm/psr7.');
+        }
+
         $factory = new Psr17Factory();
 
         return new PsrHttpFactory($factory, $factory, $factory, $factory);

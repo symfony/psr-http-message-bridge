@@ -2,19 +2,10 @@
 
 namespace Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\App;
 
-use Nyholm\Psr7\Factory\Psr17Factory;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Log\NullLogger;
-use Symfony\Bridge\PsrHttpMessage\ArgumentValueResolver\PsrServerRequestResolver;
-use Symfony\Bridge\PsrHttpMessage\EventListener\PsrResponseListener;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
-use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Bridge\PsrHttpMessage\Bundle\PsrHttpMessageBundle;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\App\Controller\PsrRequestController;
+use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\App\Service\AllFactories;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -26,14 +17,29 @@ class Kernel44 extends SymfonyKernel
 {
     use MicroKernelTrait;
 
+    private $implementation;
+
+    public function __construct(string $implementation)
+    {
+        $this->implementation = $implementation;
+
+        parent::__construct('test', true);
+    }
+
     public function registerBundles(): iterable
     {
         yield new FrameworkBundle();
+        yield new PsrHttpMessageBundle();
     }
 
     public function getProjectDir(): string
     {
         return __DIR__;
+    }
+
+    public function getCacheDir(): string
+    {
+        return parent::getCacheDir().'/'.$this->implementation;
     }
 
     protected function configureRoutes(RouteCollectionBuilder $routes): void
@@ -50,18 +56,23 @@ class Kernel44 extends SymfonyKernel
             'test' => true,
         ]);
 
-        $container->register('nyholm.psr_factory', Psr17Factory::class);
-        $container->setAlias(ResponseFactoryInterface::class, 'nyholm.psr_factory');
-        $container->setAlias(ServerRequestFactoryInterface::class, 'nyholm.psr_factory');
-        $container->setAlias(StreamFactoryInterface::class, 'nyholm.psr_factory');
-        $container->setAlias(UploadedFileFactoryInterface::class, 'nyholm.psr_factory');
+        $bundleConfig = [
+            'message_converters' => ['enabled' => true],
+        ];
+        if ('auto' !== $this->implementation && 'minimal' !== $this->implementation) {
+            $bundleConfig['message_factories'] = [
+                'enabled' => true,
+                'implementation' => $this->implementation,
+            ];
+        }
 
-        $container->register(HttpFoundationFactoryInterface::class, HttpFoundationFactory::class)->setAutowired(true)->setAutoconfigured(true);
-        $container->register(HttpMessageFactoryInterface::class, PsrHttpFactory::class)->setAutowired(true)->setAutoconfigured(true);
-        $container->register(PsrResponseListener::class)->setAutowired(true)->setAutoconfigured(true);
-        $container->register(PsrServerRequestResolver::class)->setAutowired(true)->setAutoconfigured(true);
+        $container->loadFromExtension('psr_http_message', $bundleConfig);
 
         $container->register('logger', NullLogger::class);
-        $container->register(PsrRequestController::class)->setPublic(true)->setAutowired(true);
+
+        if ('minimal' !== $this->implementation) {
+            $container->register(PsrRequestController::class)->setPublic(true)->setAutowired(true);
+            $container->register(AllFactories::class)->setPublic(true)->setAutowired(true);
+        }
     }
 }

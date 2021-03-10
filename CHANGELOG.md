@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+# 2.2.0 (TBA)
+
+  * Added a bundle that integrates the bridge into Symfony applications
+
 # 2.1.0 (2021-02-17)
 
   * Added a `PsrResponseListener` to automatically convert PSR-7 responses returned by controllers

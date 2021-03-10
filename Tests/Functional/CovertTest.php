@@ -36,12 +36,15 @@ class CovertTest extends TestCase
 {
     private $tmpDir;
 
-    protected function setUp(): void
+    public static function setUpBeforeClass(): void
     {
         if (!class_exists(Psr7Request::class)) {
-            $this->markTestSkipped('nyholm/psr7 is not installed.');
+            self::markTestSkipped('nyholm/psr7 is not installed.');
         }
+    }
 
+    protected function setUp(): void
+    {
         $this->tmpDir = sys_get_temp_dir();
     }
 

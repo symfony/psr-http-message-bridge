@@ -15,11 +15,12 @@ use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\App\Kernel;
 use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\App\Kernel44;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpKernel\Kernel as SymfonyKernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @author Alexander M. Turek <me@derrabus.de>
  */
-final class ControllerTest extends WebTestCase
+abstract class ControllerTest extends WebTestCase
 {
     public function testServerRequestAction()
     {
@@ -52,4 +53,15 @@ final class ControllerTest extends WebTestCase
     {
         return SymfonyKernel::VERSION_ID >= 50200 ? Kernel::class : Kernel44::class;
     }
+
+    protected static function createKernel(array $options = []): KernelInterface
+    {
+        if (null === static::$class) {
+            static::$class = static::getKernelClass();
+        }
+
+        return new static::$class(static::getImplementation());
+    }
+
+    abstract protected static function getImplementation(): string;
 }
