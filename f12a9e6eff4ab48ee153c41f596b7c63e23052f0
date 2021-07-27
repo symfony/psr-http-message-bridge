@@ -1,0 +1,13 @@
+---------------------------------------------------------------------------
+
+by derrabus at 2021-07-18T22:45:13Z
+
+Looks like GitHub Action are disabled on this repo. :-/
+
+---------------------------------------------------------------------------
+
+by derrabus at 2021-07-27T18:27:17Z
+
+The YAML file was broken. GHA are running on my fork: https://github.com/derrabus/psr-http-message-bridge/runs/3174801638
+
+The failures should be addressed in a follow-up.
