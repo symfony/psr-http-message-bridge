@@ -22,6 +22,7 @@ use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Symfony\Bridge\PsrHttpMessage\Tests\Fixtures\FalseContentResponse;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -233,5 +234,23 @@ class CovertTest extends TestCase
         file_put_contents($path, $content);
 
         return new UploadedFile($path, $originalName, $mimeType, $error, true);
+    }
+
+    public function testConvertResponseNotPanicOnNullContentResponse()
+    {
+        $sfResponse = new FalseContentResponse(
+            null,
+            201,
+            ['x-symfony' => ['3.4']]
+        );
+        $sfResponse->setContentFalse();
+
+        $factory = new Psr17Factory();
+
+        $finalFactory = new PsrHttpFactory($factory, $factory, $factory, $factory);
+
+        $convertedResponse = $finalFactory->createResponse($sfResponse);
+
+        self::assertNotNull($convertedResponse);
     }
 }
