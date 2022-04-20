@@ -143,7 +143,7 @@ class PsrHttpFactory implements HttpMessageFactoryInterface
                 $symfonyResponse->sendContent();
                 ob_end_clean();
             } else {
-                $stream->write(is_string($symfonyResponse->getContent()) ? $symfonyResponse->getContent() : '');
+                $stream->write((string) $symfonyResponse->getContent());
             }
         }
 
