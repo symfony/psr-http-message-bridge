@@ -1,0 +1,62 @@
+---------------------------------------------------------------------------
+
+by stayallive at 2023-04-20T08:51:45Z
+
+https://github.com/Nyholm/psr7/releases/tag/1.7.0 just released, should unblock this 🥳
+
+---------------------------------------------------------------------------
+
+by derrabus at 2023-04-20T10:07:19Z
+
+Good news: We are indeed unblocked. The bad news: the tests blew up. 😏
+
+---------------------------------------------------------------------------
+
+by stof at 2023-04-20T10:58:27Z
+
+Well, fixture classes need to be compatible with the new version of packages.
+
+---------------------------------------------------------------------------
+
+by stof at 2023-04-20T12:35:49Z
+
+Note that this will probably make it hard to keep compat with PHP 7.1 in the testsuite (as variance in PHP requires PHP 7.2 and variance is require to write code supporting multiple versions of the interface).
+I suggest that we bump the min version to 7.2.5 (like Symfony 5.4 LTS) instead of trying to maintain multiple fixture classes to keep the existing ones for 7.1.
+
+---------------------------------------------------------------------------
+
+by derrabus at 2023-04-20T13:19:11Z
+
+Agreed. Let's drop Symfony 4 along with PHP 7.1: #114
+
+---------------------------------------------------------------------------
+
+by derrabus at 2023-04-20T13:39:00Z
+
+Do we need those fixtures anyway? I mean, we could just use the classes from `nyholm/psr7`. 🤔
+
+---------------------------------------------------------------------------
+
+by nicolas-grekas at 2023-04-20T14:30:25Z
+
+@erikn69 in case this helps, you can run tests locally using `./vendor/bin/simple-phpunit`
+
+---------------------------------------------------------------------------
+
+by erikn69 at 2023-04-20T14:44:32Z
+
+I did try `./vendor/bin/simple-phpunit`, but it brings me Phpunit 9, and seems like this need Phpunit 8
+
+---------------------------------------------------------------------------
+
+by derrabus at 2023-04-20T14:47:45Z
+
+The tests run perfectly fine on PHPUnit 9: https://github.com/symfony/psr-http-message-bridge/actions/runs/4754853299/jobs/8448204579#step:6:11
+
+---------------------------------------------------------------------------
+
+by erikn69 at 2023-04-20T15:07:34Z
+
+> The tests run perfectly fine on PHPUnit 9
+
+yes, it was a problem in my environment, fixed
