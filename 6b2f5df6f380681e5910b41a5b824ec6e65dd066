@@ -1,0 +1,21 @@
+---------------------------------------------------------------------------
+
+by derrabus at 2023-07-23T21:41:09Z
+
+Thank you. I think, we're almost there. 🙂
+
+Leveraging the new `getPayload()` method to populate the parsed body of the PSR-7 request is a good idea.
+
+The test that you've added covers the happy case well. But what happens if the JSON payload cannot be decoded? We should also have a test that covers this case.
+
+---------------------------------------------------------------------------
+
+by AurelienPillevesse at 2023-07-23T21:43:45Z
+
+That's a good idea, I will add this test case tomorrow morning
+
+---------------------------------------------------------------------------
+
+by AurelienPillevesse at 2023-07-25T05:42:11Z
+
+New tests have been added
