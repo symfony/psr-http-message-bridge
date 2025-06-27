@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Test to convert a request/response back and forth to make sure we do not loose data.
+ * Test to convert a request/response back and forth to make sure we do not lose data.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
