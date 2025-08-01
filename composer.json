@@ -28,14 +28,16 @@
         "symfony/config": "^7.4|^8.0",
         "symfony/event-dispatcher": "^7.4|^8.0",
         "symfony/framework-bundle": "^7.4|^8.0",
-        "symfony/http-kernel": "^7.4|^8.0"
+        "symfony/http-kernel": "^7.4|^8.0",
+        "symfony/runtime": "^7.4|^8.0"
     },
     "conflict": {
         "php-http/discovery": "<1.15"
     },
     "config": {
         "allow-plugins": {
-            "php-http/discovery": false
+            "php-http/discovery": false,
+            "symfony/runtime": false
         }
     },
     "autoload": {
