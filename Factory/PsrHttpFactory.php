@@ -167,7 +167,7 @@ class PsrHttpFactory implements HttpMessageFactoryInterface
                     return '';
                 }, 1);
 
-		try {
+                try {
                     $symfonyResponse->sendContent();
                 } finally {
                     ob_end_clean();
