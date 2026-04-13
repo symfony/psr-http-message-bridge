@@ -71,7 +71,7 @@ class CovertTest extends TestCase
             $this->assertEquals($request->getUser(), $finalRequest->getUser());
             $this->assertEquals($request->getUserInfo(), $finalRequest->getUserInfo());
         } elseif ($finalRequest instanceof ServerRequestInterface) {
-            $strToLower = function ($arr) {
+            $strToLower = static function ($arr) {
                 foreach ($arr as $key => $value) {
                     yield strtolower($key) => $value;
                 }
@@ -146,7 +146,7 @@ class CovertTest extends TestCase
 
         return array_merge([
             [$sfRequest, $psr17Factory, $symfonyFactory],
-        ], array_map(function ($psr7Request) use ($symfonyFactory, $psr17Factory) {
+        ], array_map(static function ($psr7Request) use ($symfonyFactory, $psr17Factory) {
             return [$psr7Request, $symfonyFactory, $psr17Factory];
         }, $psr7Requests));
     }
@@ -172,7 +172,7 @@ class CovertTest extends TestCase
             $this->assertEquals($response->getStatusCode(), $finalResponse->getStatusCode());
             $this->assertEquals($response->getTtl(), $finalResponse->getTtl());
         } elseif ($finalResponse instanceof ResponseInterface) {
-            $strToLower = function ($arr) {
+            $strToLower = static function ($arr) {
                 foreach ($arr as $key => $value) {
                     yield strtolower($key) => $value;
                 }
