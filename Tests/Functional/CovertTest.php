@@ -145,9 +145,7 @@ class CovertTest extends TestCase
 
         return array_merge([
             [$sfRequest, $psr17Factory, $symfonyFactory],
-        ], array_map(static function ($psr7Request) use ($symfonyFactory, $psr17Factory) {
-            return [$psr7Request, $symfonyFactory, $psr17Factory];
-        }, $psr7Requests));
+        ], array_map(static fn ($psr7Request) => [$psr7Request, $symfonyFactory, $psr17Factory], $psr7Requests));
     }
 
     #[DataProvider('responseProvider')]
