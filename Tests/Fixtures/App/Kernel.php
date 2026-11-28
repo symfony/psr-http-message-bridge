@@ -32,7 +32,7 @@ class Kernel extends SymfonyKernel
 
     public function getProjectDir(): string
     {
-        return __DIR__;
+        return sys_get_temp_dir().'/sf_psr-http-message-bridge_'.hash('xxh32', __FILE__);
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
