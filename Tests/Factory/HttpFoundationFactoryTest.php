@@ -174,7 +174,7 @@ class HttpFoundationFactoryTest extends TestCase
         $symfonyUploadedFile = $this->callCreateUploadedFile($uploadedFile);
         $size = $symfonyUploadedFile->getSize();
 
-        $filename = 'upload';
+        $filename = 'sf_psr-http-message-bridge_'.hash('xxh32', __FILE__);
         $symfonyUploadedFile->move($this->tmpDir, $filename);
 
         $this->assertEquals($uploadedFile->getSize(), $size);
